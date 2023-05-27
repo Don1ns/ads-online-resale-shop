@@ -8,6 +8,6 @@ public interface AdsCommentService {
     void update(AdsComment adsComment);
 
     void delete(AdsComment adsComment);
-    void deleteById(long id);
-    AdsComment getById(long id);
+    void deleteById(int id);
+    AdsComment getById(int id);
 }

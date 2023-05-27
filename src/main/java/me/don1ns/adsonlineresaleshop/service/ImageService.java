@@ -8,6 +8,6 @@ public interface ImageService {
     void update(Image image);
 
     void delete(Image image);
-    void deleteById(long id);
-    Image getById(long id);
+    void deleteById(int id);
+    Image getById(int id);
 }

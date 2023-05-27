@@ -8,7 +8,7 @@ public interface AdsService {
     void update(Ads ads);
 
     void delete(Ads ads);
-    void deleteById(long id);
-    Ads getById(long id);
+    void deleteById(int id);
+    Ads getById(int id);
 
 }
