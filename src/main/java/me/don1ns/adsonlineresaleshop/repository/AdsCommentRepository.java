@@ -1,4 +1,7 @@
 package me.don1ns.adsonlineresaleshop.repository;
 
-public interface AdsCommentRepository {
+import me.don1ns.adsonlineresaleshop.entity.AdsComment;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface AdsCommentRepository extends JpaRepository<AdsComment, Integer> {
 }
