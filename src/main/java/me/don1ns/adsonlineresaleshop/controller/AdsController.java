@@ -1,6 +1,7 @@
 package me.don1ns.adsonlineresaleshop.controller;
 
 import me.don1ns.adsonlineresaleshop.DTO.*;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,8 +20,8 @@ public class AdsController {
 
     // Добавить объявление
 
-    @PostMapping("/")
-    public ResponseEntity<AdsDTO> addAds(@RequestBody CreateAdsDTO createAds) {
+    @PostMapping("/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<AdsDTO> addAds(@RequestParam CreateAdsDTO createAds, @RequestParam MultipartFile image) {
         return ResponseEntity.ok(new AdsDTO());
     }
 
@@ -83,7 +84,8 @@ public class AdsController {
     // Обновить комментарий
 
     @PatchMapping("{adId}/comments/{commentId}")
-    public ResponseEntity<CommentDTO> updateComment(@PathVariable int adId, @PathVariable int commentId, @RequestBody CommentDTO comment) {
+    public ResponseEntity<CommentDTO> updateComment(@PathVariable int adId, @PathVariable int commentId,
+                                                    @RequestBody CommentDTO comment) {
         return ResponseEntity.ok(comment);
     }
 
