@@ -1,16 +1,17 @@
 package me.don1ns.adsonlineresaleshop.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import javax.management.relation.Role;
+import java.util.List;
 
 /**
  * @author Loginova Viktoria (Логинова Виктория)
  **/
 @Entity
 @Data
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +21,8 @@ public class User {
     private String firstName;
     private String lastName;
     private String phone;
-    private String image;
-    private String contentType;
-}
+    private Role role;
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "img_id")
+    private Image image;
+ }
