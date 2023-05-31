@@ -21,7 +21,7 @@ public class AdsController {
     // Добавить объявление
 
     @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<AdsDTO> addAds(@RequestParam CreateAdsDTO createAds, @RequestParam MultipartFile image) {
+    public ResponseEntity<AdsDTO> addAds(@RequestParam("properties") CreateAdsDTO createAds, @RequestParam("image") MultipartFile image) {
         return ResponseEntity.ok(new AdsDTO());
     }
 
