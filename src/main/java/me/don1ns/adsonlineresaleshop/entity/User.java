@@ -3,6 +3,9 @@ package me.don1ns.adsonlineresaleshop.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import javax.management.relation.Role;
+import java.util.List;
+
 /**
  * @author Loginova Viktoria (Логинова Виктория)
  **/
@@ -19,5 +22,8 @@ public class User {
     private String firstName;
     private String lastName;
     private String phone;
-    private String image;
-}
+    private Role role;
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "img_id")
+    private Image image;
+ }

@@ -1,22 +1,28 @@
 package me.don1ns.adsonlineresaleshop.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 /**
  * @author Loginova Viktoria (Логинова Виктория)
  **/
 @Entity
 @Data
+@NoArgsConstructor
+@EqualsAndHashCode
+@AllArgsConstructor
+@Getter
+@Setter
+@ToString
 @Table(name = "image")
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int pk;
+    private Long id;
     private Long size;
-    private String path;
     private String mediaType;
-    private byte[] data;
-    @OneToOne
+    private byte[] image;
+    @ManyToOne()
+    @JoinColumn(name = "ads_id")
     private Ads ads;
 }

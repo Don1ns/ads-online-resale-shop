@@ -13,14 +13,16 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "ads_comment")
+@Table(name = "comments")
 public class AdsComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
     @ManyToOne
+    @JoinColumn(name = "ads_id")
     private Ads ads;
     private LocalDateTime createdAt;
     private String text;
