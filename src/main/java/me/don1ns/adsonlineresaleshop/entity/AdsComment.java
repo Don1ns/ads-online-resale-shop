@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class AdsComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

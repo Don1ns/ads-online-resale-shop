@@ -7,6 +7,7 @@ import lombok.*;
  * @author Loginova Viktoria (Логинова Виктория)
  **/
 @Entity
+@Data
 @NoArgsConstructor
 @EqualsAndHashCode
 @AllArgsConstructor
