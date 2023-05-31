@@ -8,14 +8,14 @@ import lombok.Data;
  **/
 @Entity
 @Data
+@Table(name = "ads")
 public class Ads {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
     private String image;
     private int price;
     private String title;
-    private String contentType;
     private String description;
     @ManyToOne
     private User user;

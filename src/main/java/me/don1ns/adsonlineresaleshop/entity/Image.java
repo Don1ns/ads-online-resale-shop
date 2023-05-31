@@ -1,11 +1,14 @@
 package me.don1ns.adsonlineresaleshop.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 /**
  * @author Loginova Viktoria (Логинова Виктория)
  **/
 @Entity
+@Data
+@Table(name = "image")
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

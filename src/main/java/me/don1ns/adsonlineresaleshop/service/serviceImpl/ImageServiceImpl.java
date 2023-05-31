@@ -1,6 +1,7 @@
 package me.don1ns.adsonlineresaleshop.service.serviceImpl;
 
 import me.don1ns.adsonlineresaleshop.entity.Image;
+import me.don1ns.adsonlineresaleshop.exception.ErrorMessage;
 import me.don1ns.adsonlineresaleshop.repository.ImageRepository;
 import me.don1ns.adsonlineresaleshop.service.ImageService;
 
@@ -33,6 +34,6 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public Image getById(int id) {
-        return repository.findById(id);
+        return repository.findById(id).orElseThrow(ErrorMessage::new);
     }
 }

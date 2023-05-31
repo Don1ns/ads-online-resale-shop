@@ -1,6 +1,7 @@
 package me.don1ns.adsonlineresaleshop.service.serviceImpl;
 
 import me.don1ns.adsonlineresaleshop.entity.AdsComment;
+import me.don1ns.adsonlineresaleshop.exception.ErrorMessage;
 import me.don1ns.adsonlineresaleshop.repository.AdsCommentRepository;
 import me.don1ns.adsonlineresaleshop.service.AdsCommentService;
 
@@ -33,6 +34,6 @@ public class AdsCommentServiceImpl implements AdsCommentService {
 
     @Override
     public AdsComment getById(int id) {
-        return repository.findById(id);
+        return repository.findById(id).orElseThrow(ErrorMessage::new);
     }
 }

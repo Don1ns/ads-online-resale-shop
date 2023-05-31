@@ -1,4 +1,5 @@
 package me.don1ns.adsonlineresaleshop.exception;
 
-public class ErrorMessage {
+public class ErrorMessage extends RuntimeException {
+
 }

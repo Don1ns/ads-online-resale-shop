@@ -1,6 +1,7 @@
 package me.don1ns.adsonlineresaleshop.service.serviceImpl;
 
 import me.don1ns.adsonlineresaleshop.entity.User;
+import me.don1ns.adsonlineresaleshop.exception.ErrorMessage;
 import me.don1ns.adsonlineresaleshop.repository.UserRepository;
 import me.don1ns.adsonlineresaleshop.service.UserService;
 
@@ -33,6 +34,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getById(int id) {
-        return repository.findById(id);
+        return repository.findById(id).orElseThrow(ErrorMessage::new);
     }
 }
