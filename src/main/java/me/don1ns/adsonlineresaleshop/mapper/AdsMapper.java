@@ -1,5 +1,6 @@
 package me.don1ns.adsonlineresaleshop.mapper;
 
+import me.don1ns.adsonlineresaleshop.DTO.CreateAdsDTO;
 import me.don1ns.adsonlineresaleshop.DTO.FullAdsDTO;
 import me.don1ns.adsonlineresaleshop.entity.Ads;
 import org.mapstruct.Mapper;
@@ -19,4 +20,6 @@ public interface AdsMapper {
 
     FullAdsDTO toFullAdsDto(Ads ads);
     Ads toAds(FullAdsDTO fullAdsDTO);
+
+    Ads toAds(CreateAdsDTO createAdsDTO);
 }
