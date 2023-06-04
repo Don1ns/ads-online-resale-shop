@@ -1,4 +1,4 @@
-package me.don1ns.adsonlineresaleshop.mappings;
+package me.don1ns.adsonlineresaleshop.mapper;
 
 import me.don1ns.adsonlineresaleshop.DTO.UserDTO;
 import me.don1ns.adsonlineresaleshop.entity.User;
@@ -8,9 +8,8 @@ import org.mapstruct.factory.Mappers;
 /**
  * @author Алексей Серебряков
  **/
-@Mapper
+@Mapper(componentModel = "spring")
 public interface UserMapper {
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
     User toUser(UserDTO userDTO);
     UserDTO toDto(User user);

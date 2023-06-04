@@ -1,4 +1,4 @@
-package me.don1ns.adsonlineresaleshop.service.serviceImpl;
+package me.don1ns.adsonlineresaleshop.service.impl;
 
 import me.don1ns.adsonlineresaleshop.entity.Ads;
 import me.don1ns.adsonlineresaleshop.exception.ErrorMessage;

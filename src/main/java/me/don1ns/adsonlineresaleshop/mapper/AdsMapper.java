@@ -1,4 +1,4 @@
-package me.don1ns.adsonlineresaleshop.mappings;
+package me.don1ns.adsonlineresaleshop.mapper;
 
 import me.don1ns.adsonlineresaleshop.DTO.FullAdsDTO;
 import me.don1ns.adsonlineresaleshop.entity.Ads;
@@ -8,9 +8,8 @@ import org.mapstruct.factory.Mappers;
 /**
  * @author Алексей Серебряков
  **/
-@Mapper
+@Mapper(componentModel = "spring")
 public interface AdsMapper {
-    AdsMapper INSTANCE = Mappers.getMapper(AdsMapper.class);
 
     @Mapping(source = "id", target = "pk")
     @Mapping(source = "user.firstName", target = "authorFirstName")

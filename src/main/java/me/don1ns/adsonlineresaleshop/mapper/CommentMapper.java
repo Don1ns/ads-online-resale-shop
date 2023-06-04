@@ -1,4 +1,4 @@
-package me.don1ns.adsonlineresaleshop.mappings;
+package me.don1ns.adsonlineresaleshop.mapper;
 
 import me.don1ns.adsonlineresaleshop.DTO.CommentDTO;
 import org.mapstruct.Mapper;
@@ -8,15 +8,13 @@ import org.mapstruct.factory.Mappers;
 /**
  * @author Алексей Серебряков
  **/
-@Mapper
-public interface AdsComment {
-    AdsComment INSTANCE = Mappers.getMapper(AdsComment.class);
+@Mapper(componentModel = "spring")
+public interface CommentMapper {
 
     @Mapping(source = "id", target = "pk")
     @Mapping(source = "user.id", target = "author")
     @Mapping(source = "user.image", target = "authorImage")
     @Mapping(source = "user.firstName", target = "authorFirstName")
-
-    AdsComment toAdsComment(CommentDTO commentDTO);
-    CommentDTO toCommentDto(AdsComment adsComment);
+    CommentMapper toAdsComment(CommentDTO commentDTO);
+    CommentDTO toCommentDto(CommentMapper adsComment);
 }
