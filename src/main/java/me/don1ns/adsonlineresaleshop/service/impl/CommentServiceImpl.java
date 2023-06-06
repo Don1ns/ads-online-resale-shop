@@ -16,6 +16,7 @@ import me.don1ns.adsonlineresaleshop.service.AdsService;
 import me.don1ns.adsonlineresaleshop.service.CommentService;
 import me.don1ns.adsonlineresaleshop.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.server.ResponseStatusException;
@@ -45,9 +46,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDTO addComment(Integer id, Comment commentDto, User currentUser) {
+    public CommentDTO addComment(Integer id, Comment commentDto, Authentication authentication) {
         Ads ads = adsRepository.findById(id).orElseThrow();
-        User user = userService.checkUserByUsername(currentUser.getUsername());
+        User user = userService.checkUserByUsername(authentication.getName());
 
         Comment comment = new Comment();
         comment.setUser(user);
