@@ -3,13 +3,11 @@ package me.don1ns.adsonlineresaleshop.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.List;
-
 /**
   * @author Loginova Viktoria (Логинова Виктория)
  **/
-@Entity
 @Data
+@Entity
 @Table(name = "ads")
 public class Ads {
     @Id
@@ -24,4 +22,52 @@ public class Ads {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

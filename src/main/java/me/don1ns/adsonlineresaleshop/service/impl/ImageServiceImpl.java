@@ -4,7 +4,9 @@ import me.don1ns.adsonlineresaleshop.entity.Image;
 import me.don1ns.adsonlineresaleshop.exception.ErrorMessage;
 import me.don1ns.adsonlineresaleshop.repository.ImageRepository;
 import me.don1ns.adsonlineresaleshop.service.ImageService;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ImageServiceImpl implements ImageService {
     private final ImageRepository repository;
 

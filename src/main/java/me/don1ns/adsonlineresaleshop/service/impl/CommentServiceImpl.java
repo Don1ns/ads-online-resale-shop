@@ -4,7 +4,9 @@ import me.don1ns.adsonlineresaleshop.entity.Comment;
 import me.don1ns.adsonlineresaleshop.exception.ErrorMessage;
 import me.don1ns.adsonlineresaleshop.repository.CommentRepository;
 import me.don1ns.adsonlineresaleshop.service.CommentService;
+import org.springframework.stereotype.Service;
 
+@Service
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository repository;
 
