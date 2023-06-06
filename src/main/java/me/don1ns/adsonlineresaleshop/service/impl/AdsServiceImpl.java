@@ -1,5 +1,6 @@
 package me.don1ns.adsonlineresaleshop.service.impl;
 
+import me.don1ns.adsonlineresaleshop.DTO.AdsDTO;
 import me.don1ns.adsonlineresaleshop.DTO.CreateAdsDTO;
 import me.don1ns.adsonlineresaleshop.DTO.FullAdsDTO;
 import me.don1ns.adsonlineresaleshop.DTO.ResponseWrapperAds;
@@ -50,13 +51,11 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public void updateImage(int id, Image image) {
-
-    }
-
-    @Override
-    public void delete(Ads ads) {
-        repository.delete(ads);
+    public String updateImage(int adId, Image image) {
+        Ads ads = repository.findById(adId).orElseThrow(AdNotFoundException::new);
+        ads.setImage(image);
+        repository.save(ads);
+        return image.getPath();
     }
 
     @Override
@@ -70,11 +69,11 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public Ads addAd(CreateAdsDTO createAdsDTO, Image image) {
+    public AdsDTO adAd(CreateAdsDTO createAdsDTO, Image image) {
         Ads ads = adsMapper.toAds(createAdsDTO);
         ads.setImage(image);
         repository.save(ads);
-        return ads;
+        return adsMapper.toAdsDto(ads);
     }
 
     @Override
