@@ -2,7 +2,6 @@ package me.don1ns.adsonlineresaleshop.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDateTime;
 
 /**
  * @author Loginova Viktoria (Логинова Виктория)
@@ -20,7 +19,7 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name = "ads_id")
     private Ads ads;
-    private LocalDateTime createdAt;
+    private long createdAt;
     private String text;
 
     public int getId() {
@@ -47,7 +46,7 @@ public class Comment {
         this.ads = ads;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public long getCreatedAt() {
         return createdAt;
     }
 
