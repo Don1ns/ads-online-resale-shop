@@ -2,9 +2,12 @@ package me.don1ns.adsonlineresaleshop.service.impl;
 
 import me.don1ns.adsonlineresaleshop.entity.User;
 import me.don1ns.adsonlineresaleshop.exception.ErrorMessage;
+import me.don1ns.adsonlineresaleshop.exception.UserNotFoundException;
 import me.don1ns.adsonlineresaleshop.repository.UserRepository;
 import me.don1ns.adsonlineresaleshop.service.UserService;
 import org.springframework.stereotype.Service;
+
+import static me.don1ns.adsonlineresaleshop.constant.Constant.USER_NOT_FOUND_MSG;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -37,5 +40,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getById(int id) {
         return repository.findById(id).orElseThrow(ErrorMessage::new);
+    }
+
+    @Override
+    public User checkUserByUsername(String username) {
+        User user = repository.findByUsername(username);
+        if (user == null) {
+            throw new UserNotFoundException(USER_NOT_FOUND_MSG.formatted(username));
+        }
+        return user;
     }
 }

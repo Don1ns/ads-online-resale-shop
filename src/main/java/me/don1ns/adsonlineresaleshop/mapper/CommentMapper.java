@@ -17,4 +17,5 @@ public interface CommentMapper {
     @Mapping(source = "user.firstName", target = "authorFirstName")
     CommentMapper toAdsComment(CommentDTO commentDTO);
     CommentDTO toCommentDto(CommentMapper adsComment);
+
 }
