@@ -1,5 +1,6 @@
 package me.don1ns.adsonlineresaleshop.service.impl;
 
+import me.don1ns.adsonlineresaleshop.DTO.CommentDTO;
 import me.don1ns.adsonlineresaleshop.DTO.CreateCommentDTO;
 import me.don1ns.adsonlineresaleshop.DTO.ResponseWrapperCommentDTO;
 import me.don1ns.adsonlineresaleshop.DTO.Role;
@@ -38,14 +39,14 @@ public class CommentServiceImpl implements CommentService {
     }
 
     public ResponseWrapperCommentDTO getComments(Integer id, UserDetails currentUser) {
-        List<Comment> comments = commentRepository.findByAdsId(id).stream()
+        List<CommentDTO> comments = commentRepository.findByAdsId(id).stream()
                 .map(comment -> commentMapper.toCommentDto(comment))
                 .toList();
         return new ResponseWrapperCommentDTO(comments.size(), comments);
     }
 
     @Override
-    public void addComment(Integer id, Comment commentDto, User currentUser) {
+    public CommentDTO addComment(Integer id, Comment commentDto, User currentUser) {
         Ads ads = adsRepository.findById(id).orElseThrow(AdNotFoundException::new);
         User user = userService.checkUserByUsername(currentUser.getUsername());
 
@@ -58,7 +59,6 @@ public class CommentServiceImpl implements CommentService {
         comment = commentRepository.save(comment);
 
         return commentMapper.toCommentDto(comment);
-        //TODO доработать метод toCommentDto
     }
 
     @Override
