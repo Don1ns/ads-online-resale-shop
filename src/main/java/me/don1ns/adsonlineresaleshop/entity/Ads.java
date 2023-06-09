@@ -1,7 +1,7 @@
 package me.don1ns.adsonlineresaleshop.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 
@@ -11,6 +11,11 @@ import java.util.List;
 @Entity
 @Data
 @Table(name = "ads")
+@NoArgsConstructor
+@EqualsAndHashCode
+@AllArgsConstructor
+@Getter
+@Setter
 public class Ads {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
