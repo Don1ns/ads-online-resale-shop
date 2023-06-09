@@ -11,9 +11,9 @@ public interface CommentService {
 
     CommentDTO addComment(Integer id, Comment commentDto, User user);
 
-    Comment updateComment(int id, CreateCommentDTO createCommentDTO);
+    CommentDTO updateComment(Integer adId, Integer commentId, CommentDTO commentDTO, UserDetails currentUser);
 
-    boolean deleteComment(Integer adId, Integer commentId, UserDetails currentUser);
+    boolean deleteComment(Integer commentId, UserDetails currentUser);
 
 
 }

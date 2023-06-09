@@ -22,8 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-import static me.don1ns.adsonlineresaleshop.constant.Constant.ACCESS_DENIED_MSG;
-import static me.don1ns.adsonlineresaleshop.constant.Constant.COMMENT_NOT_FOUND_MSG;
+import static me.don1ns.adsonlineresaleshop.constant.Constant.*;
 
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
@@ -47,7 +46,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDTO addComment(Integer id, Comment commentDto, User currentUser) {
-        Ads ads = adsRepository.findById(id).orElseThrow(AdNotFoundException::new);
+        Ads ads = adsRepository.findById(id).orElseThrow();
         User user = userService.checkUserByUsername(currentUser.getUsername());
 
         Comment comment = new Comment();
@@ -62,17 +61,22 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment updateComment(int id, CreateCommentDTO createCommentDTO) {
-        Comment comment = commentRepository.findById(id).orElseThrow();
+    public CommentDTO updateComment(Integer adId, Integer commentId, CommentDTO commentDTO, UserDetails currentUser) {
+        checkPermission(commentId, currentUser);
+        Ads ads = adsRepository.findById(adId).
+                orElseThrow(() -> {
+                    return new AdNotFoundException(AD_NOT_FOUND_MSG.formatted(adId));
+                });
+        Comment comment = commentRepository.findById(commentId).orElseThrow();
         comment.setCreatedAt(System.currentTimeMillis());
-        comment.setText(createCommentDTO.getText());
+        comment.setText(commentDTO.getText());
         commentRepository.save(comment);
-        return comment;
+        return commentMapper.toCommentDto(comment);
     }
 
 
     @Override
-    public boolean deleteComment(Integer adId, Integer commentId, UserDetails currentUser) {
+    public boolean deleteComment(Integer commentId, UserDetails currentUser) {
         checkPermission(commentId, currentUser);
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CommentNotFoundException(COMMENT_NOT_FOUND_MSG.formatted(commentId)));
         commentRepository.delete(comment);
