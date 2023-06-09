@@ -1,13 +1,14 @@
 package me.don1ns.adsonlineresaleshop.service;
 
 import me.don1ns.adsonlineresaleshop.entity.Image;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 public interface ImageService {
-    void save(Image image);
+    Image uploadImage(MultipartFile imageFile) throws IOException;
 
-    void update(Image image);
+    Image getImageById(long id);
 
-    void delete(Image image);
-    void deleteById(int id);
-    Image getById(int id);
+    void remove(Image image);
 }

@@ -1,41 +1,36 @@
 package me.don1ns.adsonlineresaleshop.service.impl;
-
+import lombok.RequiredArgsConstructor;
 import me.don1ns.adsonlineresaleshop.entity.Image;
-import me.don1ns.adsonlineresaleshop.exception.ErrorMessage;
 import me.don1ns.adsonlineresaleshop.repository.ImageRepository;
 import me.don1ns.adsonlineresaleshop.service.ImageService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import org.webjars.NotFoundException;
+import java.io.IOException;
 
+@Transactional
+@RequiredArgsConstructor
 @Service
 public class ImageServiceImpl implements ImageService {
-    private final ImageRepository repository;
-
-    public ImageServiceImpl(ImageRepository repository) {
-        this.repository = repository;
+    private final ImageRepository imageRepository;
+    @Override
+    public Image uploadImage(MultipartFile imageFile) throws IOException {
+        Image image = new Image();
+        image.setImage(imageFile.getBytes());
+        image.setSize(imageFile.getSize());
+        image.setMediaType(imageFile.getContentType());
+        return imageRepository.save(image);
+    }
+    @Override
+    public Image getImageById(long id) {
+        return imageRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("Image with id " + id + " not found!"));
     }
 
     @Override
-    public void save(Image image) {
-        repository.save(image);
+    public void remove(Image image) {
+        imageRepository.delete(image);
     }
 
-    @Override
-    public void update(Image image) {
-        repository.save(image);
-    }
-
-    @Override
-    public void delete(Image image) {
-        repository.delete(image);
-    }
-
-    @Override
-    public void deleteById(int id) {
-        repository.deleteById(id);
-    }
-
-    @Override
-    public Image getById(int id) {
-        return repository.findById(id).orElseThrow(ErrorMessage::new);
-    }
 }
