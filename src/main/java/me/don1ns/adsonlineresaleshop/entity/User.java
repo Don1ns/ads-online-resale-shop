@@ -36,11 +36,11 @@ public class User {
     @JoinColumn(name = "img_id")
     private Image image;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

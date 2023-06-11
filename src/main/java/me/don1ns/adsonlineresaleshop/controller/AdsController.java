@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import me.don1ns.adsonlineresaleshop.DTO.*;
+import me.don1ns.adsonlineresaleshop.entity.Image;
 import me.don1ns.adsonlineresaleshop.service.AdsService;
 import me.don1ns.adsonlineresaleshop.service.CommentService;
 import me.don1ns.adsonlineresaleshop.service.ImageService;
@@ -14,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/ads")
@@ -61,7 +64,12 @@ public class AdsController {
     )
     @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AdsDTO> addAds(@RequestParam("properties") CreateAdsDTO createAds, @RequestParam("image") MultipartFile image, Authentication authentication) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(adsService.adAd(createAds, image));
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(adsService.adAd(createAds, imageService.uploadImage(image), authentication.getName()));
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().build();
+        }
+
     }
 
     // Получить информацию об объявлении
@@ -82,7 +90,7 @@ public class AdsController {
     )
     @GetMapping("/{id}")
     public ResponseEntity<FullAdsDTO> getAds(@PathVariable int id) {
-        return ResponseEntity.ok(adsService.getById(id));
+        return ResponseEntity.ok(adsService.getAdInfo(id));
     }
 
     // Удалить объявление
@@ -139,7 +147,7 @@ public class AdsController {
     )
     @GetMapping("/me")
     public ResponseEntity<ResponseWrapperAds> getAdsMe(Authentication authentication) {
-        return ResponseEntity.ok(adsService.getAllUserAds());
+        return ResponseEntity.ok(adsService.getAllUserAds(authentication.getName()));
     }
 
     // Обновить картинку объявления
@@ -159,7 +167,11 @@ public class AdsController {
     )
     @PatchMapping("/{id}/image")
     public ResponseEntity<AdsDTO> updateImage(@PathVariable int id, @RequestParam MultipartFile image) {
-        return ResponseEntity.ok(adsService.updateImage(id, image));
+        try {
+            return ResponseEntity.ok(adsService.updateImage(id, imageService.uploadImage(image)));
+        } catch (IOException e) {
+            return ResponseEntity.status(403).build();
+        }
     }
 
     // Получить комментарии объявления
