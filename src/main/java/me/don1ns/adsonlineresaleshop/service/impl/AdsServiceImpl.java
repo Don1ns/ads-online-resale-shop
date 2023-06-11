@@ -6,6 +6,7 @@ import me.don1ns.adsonlineresaleshop.DTO.FullAdsDTO;
 import me.don1ns.adsonlineresaleshop.DTO.ResponseWrapperAds;
 import me.don1ns.adsonlineresaleshop.entity.Ads;
 import me.don1ns.adsonlineresaleshop.entity.Image;
+import me.don1ns.adsonlineresaleshop.entity.User;
 import me.don1ns.adsonlineresaleshop.exception.AdNotFoundException;
 import me.don1ns.adsonlineresaleshop.mapper.AdsMapper;
 import me.don1ns.adsonlineresaleshop.repository.AdsRepository;
@@ -70,9 +71,10 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public AdsDTO adAd(CreateAdsDTO createAdsDTO, Image image, String userName) {
+    public AdsDTO adAd(CreateAdsDTO createAdsDTO, Image image, User user) {
         Ads ads = adsMapper.toAds(createAdsDTO);
         ads.setImage(image);
+        ads.setUser(user);
         repository.save(ads);
         return adsMapper.toAdsDto(ads);
     }

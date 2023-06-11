@@ -6,13 +6,14 @@ import me.don1ns.adsonlineresaleshop.DTO.FullAdsDTO;
 import me.don1ns.adsonlineresaleshop.DTO.ResponseWrapperAds;
 import me.don1ns.adsonlineresaleshop.entity.Ads;
 import me.don1ns.adsonlineresaleshop.entity.Image;
+import me.don1ns.adsonlineresaleshop.entity.User;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface AdsService {
     void save(Ads ads);
     void deleteById(int id);
     Ads getById(int id);
-    AdsDTO adAd(CreateAdsDTO createAdsDTO, Image image, String userName);
+    AdsDTO adAd(CreateAdsDTO createAdsDTO, Image image, User user);
     ResponseWrapperAds<Ads> getAllAds();
     FullAdsDTO getAdInfo(int id);
     AdsDTO update(int id, CreateAdsDTO createAdsDTO);

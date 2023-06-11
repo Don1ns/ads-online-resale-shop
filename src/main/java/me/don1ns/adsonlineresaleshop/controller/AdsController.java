@@ -6,9 +6,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import me.don1ns.adsonlineresaleshop.DTO.*;
 import me.don1ns.adsonlineresaleshop.entity.Image;
+import me.don1ns.adsonlineresaleshop.entity.User;
 import me.don1ns.adsonlineresaleshop.service.AdsService;
 import me.don1ns.adsonlineresaleshop.service.CommentService;
 import me.don1ns.adsonlineresaleshop.service.ImageService;
+import me.don1ns.adsonlineresaleshop.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +27,7 @@ public class AdsController {
     private AdsService adsService;
     private ImageService imageService;
     private CommentService commentService;
+    private UserService userService;
 
     // Получить все объявления
     @Operation(
@@ -64,12 +67,16 @@ public class AdsController {
     )
     @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AdsDTO> addAds(@RequestParam("properties") CreateAdsDTO createAds, @RequestParam("image") MultipartFile image, Authentication authentication) {
-        try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(adsService.adAd(createAds, imageService.uploadImage(image), authentication.getName()));
-        } catch (IOException e) {
-            return ResponseEntity.badRequest().build();
+        User user = userService.checkUserByUsername(authentication.getName());
+        if (user != null) {
+            try {
+                return ResponseEntity.status(HttpStatus.CREATED).body(adsService.adAd(createAds, imageService.uploadImage(image), user));
+            } catch (IOException e) {
+                return ResponseEntity.badRequest().build();
+            }
+        } else {
+            return ResponseEntity.status(401).build();
         }
-
     }
 
     // Получить информацию об объявлении
