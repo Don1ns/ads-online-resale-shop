@@ -12,9 +12,9 @@ public interface CommentService {
 
     CommentDTO addComment(Integer id, Comment commentDto, Authentication authentication);
 
-    CommentDTO updateComment(Integer adId, Integer commentId, CommentDTO commentDTO, UserDetails currentUser);
+    CommentDTO updateComment(Integer adId, Integer commentId, CommentDTO commentDTO, Authentication authentication);
 
-    boolean deleteComment(Integer commentId, UserDetails currentUser);
+    boolean deleteComment(Integer adId,Integer commentId, Authentication authentication);
 
 
 }
