@@ -1,6 +1,7 @@
 package me.don1ns.adsonlineresaleshop.service.impl;
 
 import me.don1ns.adsonlineresaleshop.DTO.CommentDTO;
+import me.don1ns.adsonlineresaleshop.DTO.CreateCommentDTO;
 import me.don1ns.adsonlineresaleshop.DTO.ResponseWrapperCommentDTO;
 import me.don1ns.adsonlineresaleshop.entity.Ads;
 import me.don1ns.adsonlineresaleshop.entity.Comment;
@@ -35,15 +36,16 @@ public class CommentServiceImpl implements CommentService {
         this.userService = userService;
     }
 
-    public ResponseWrapperCommentDTO getComments(Integer id, UserDetails currentUser) {
+    @Override
+    public ResponseWrapperCommentDTO getComments(Integer id) {
         List<CommentDTO> comments = commentRepository.findByAdsId(id).stream()
-                .map(comment -> commentMapper.toCommentDto(comment))
+                .map(commentMapper::toCommentDto)
                 .toList();
         return new ResponseWrapperCommentDTO(comments.size(), comments);
     }
 
     @Override
-    public CommentDTO addComment(Integer id, Comment commentDto, Authentication authentication) {
+    public CommentDTO addComment(Integer id, CreateCommentDTO createCommentDTO, Authentication authentication) {
         Ads ads = adsRepository.findById(id).orElseThrow();
         User user = userService.checkUserByUsername(authentication.getName());
 
@@ -51,7 +53,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setUser(user);
         comment.setAds(ads);
         comment.setCreatedAt(System.currentTimeMillis());
-        comment.setText(commentDto.getText());
+        comment.setText(createCommentDTO.getText());
 
         comment = commentRepository.save(comment);
 

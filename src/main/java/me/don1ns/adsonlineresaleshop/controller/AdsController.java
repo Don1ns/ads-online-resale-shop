@@ -221,7 +221,7 @@ public class AdsController {
     )
     @PostMapping("{id}/comments")
     public ResponseEntity<CommentDTO> addComment(@PathVariable int id, @RequestBody CreateCommentDTO createCommentDTO, Authentication authentication) {
-        return ResponseEntity.ok(commentService.addComment(id, createCommentDTO));
+        return ResponseEntity.ok(commentService.addComment(id, createCommentDTO, authentication));
     }
 
     // Удалить комментарий
@@ -234,8 +234,8 @@ public class AdsController {
             }
     )
     @DeleteMapping("{adId}/comments/{commentId}")
-    public ResponseEntity<CommentDTO> deleteComment(@PathVariable int adId, @PathVariable int commentId) {
-        commentService.deleteById(adId, commentId);
+    public ResponseEntity<CommentDTO> deleteComment(@PathVariable int adId, @PathVariable int commentId, Authentication authentication) {
+        commentService.deleteComment(adId, commentId, authentication);
         return ResponseEntity.ok().build();
     }
 
@@ -257,8 +257,8 @@ public class AdsController {
     )
     @PatchMapping("{adId}/comments/{commentId}")
     public ResponseEntity<CommentDTO> updateComment(@PathVariable int adId, @PathVariable int commentId,
-                                                    @RequestBody CommentDTO comment) {
-        return ResponseEntity.ok(commentService.updateComment(adId, commentId, comment));
+                                                    @RequestBody CommentDTO comment, Authentication authentication) {
+        return ResponseEntity.ok(commentService.updateComment(adId, commentId, comment, authentication));
     }
 
 }
