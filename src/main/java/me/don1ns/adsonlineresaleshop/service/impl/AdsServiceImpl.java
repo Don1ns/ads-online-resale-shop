@@ -13,9 +13,9 @@ import me.don1ns.adsonlineresaleshop.repository.AdsRepository;
 import me.don1ns.adsonlineresaleshop.service.AdsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AdsServiceImpl implements AdsService {
@@ -91,5 +91,16 @@ public class AdsServiceImpl implements AdsService {
     @Override
     public FullAdsDTO getAdInfo(int id) {
         return adsMapper.toFullAdsDto(repository.findById(id).orElseThrow(AdNotFoundException::new));
+    }
+
+    @Override
+    public ResponseWrapperAds<AdsDTO> getAllByTitle(String title) {
+        ResponseWrapperAds<AdsDTO> response = new ResponseWrapperAds<>();
+        List<AdsDTO> ads = repository.findAllByTitleContainingIgnoreCase(title).stream()
+                .map(adsMapper::toAdsDto)
+                .collect(Collectors.toList());
+        response.setCount(ads.size());
+        response.setResults(ads);
+        return response;
     }
 }

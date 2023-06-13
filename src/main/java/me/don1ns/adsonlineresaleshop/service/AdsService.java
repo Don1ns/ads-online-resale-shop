@@ -19,4 +19,6 @@ public interface AdsService {
     AdsDTO update(int id, CreateAdsDTO createAdsDTO);
     ResponseWrapperAds<Ads> getAllUserAds(String userName);
     AdsDTO updateImage(int id, Image image);
+
+    ResponseWrapperAds<AdsDTO> getAllByTitle(String title);
 }

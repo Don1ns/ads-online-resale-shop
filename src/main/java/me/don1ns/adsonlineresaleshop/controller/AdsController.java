@@ -261,4 +261,23 @@ public class AdsController {
         return ResponseEntity.ok(commentService.updateComment(adId, commentId, comment));
     }
 
+    @Operation(
+            summary = "Выполнить поиск объявления по названию",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200", description = "OK",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = ResponseWrapperAds.class)
+                                    )
+                            }
+                    )
+            }
+    )
+    @GetMapping("/search{title}")
+    public ResponseEntity<ResponseWrapperAds<AdsDTO>> getAdsByTitle(@PathVariable("title") String title) {
+        return ResponseEntity.ok(adsService.getAllByTitle(title));
+    }
+
 }
