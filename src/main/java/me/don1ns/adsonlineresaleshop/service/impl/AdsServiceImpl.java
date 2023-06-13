@@ -6,12 +6,14 @@ import me.don1ns.adsonlineresaleshop.DTO.FullAdsDTO;
 import me.don1ns.adsonlineresaleshop.DTO.ResponseWrapperAds;
 import me.don1ns.adsonlineresaleshop.entity.Ads;
 import me.don1ns.adsonlineresaleshop.entity.Image;
+import me.don1ns.adsonlineresaleshop.entity.User;
 import me.don1ns.adsonlineresaleshop.exception.AdNotFoundException;
 import me.don1ns.adsonlineresaleshop.mapper.AdsMapper;
 import me.don1ns.adsonlineresaleshop.repository.AdsRepository;
 import me.don1ns.adsonlineresaleshop.service.AdsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -32,30 +34,30 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public Ads update(int id, CreateAdsDTO createAdsDTO) {
+    public AdsDTO update(int id, CreateAdsDTO createAdsDTO) {
         Ads ads = repository.findById(id).orElseThrow(AdNotFoundException::new);
         ads.setDescription(createAdsDTO.getDescription());
         ads.setPrice(createAdsDTO.getPrice());
         ads.setTitle(createAdsDTO.getTitle());
         repository.save(ads);
-        return ads;
+        return adsMapper.toAdsDto(ads);
     }
 
     @Override
-    public ResponseWrapperAds<Ads> getAllUserAds() {
+    public ResponseWrapperAds<Ads> getAllUserAds(String userName) {
         ResponseWrapperAds<Ads> response = new ResponseWrapperAds<>();
-        List<Ads> list = repository.findAll();
+        List<Ads> list = repository.findAdsByUserName(userName);
         response.setCount(list.size());
         response.setResults(list);
         return response;
     }
 
     @Override
-    public String updateImage(int adId, Image image) {
-        Ads ads = repository.findById(adId).orElseThrow(AdNotFoundException::new);
+    public AdsDTO updateImage(int id, Image image) {
+        Ads ads = repository.findById(id).orElseThrow(AdNotFoundException::new);
         ads.setImage(image);
         repository.save(ads);
-        return image.getPath();
+        return adsMapper.toAdsDto(ads);
     }
 
     @Override
@@ -69,9 +71,10 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public AdsDTO adAd(CreateAdsDTO createAdsDTO, Image image) {
+    public AdsDTO adAd(CreateAdsDTO createAdsDTO, Image image, User user) {
         Ads ads = adsMapper.toAds(createAdsDTO);
         ads.setImage(image);
+        ads.setUser(user);
         repository.save(ads);
         return adsMapper.toAdsDto(ads);
     }
