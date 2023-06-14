@@ -17,4 +17,20 @@ public class ResponseWrapperAds<T> {
         responseWrapper.count = results.size();
         return responseWrapper;
     }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public Collection<T> getResults() {
+        return results;
+    }
+
+    public void setResults(Collection<T> results) {
+        this.results = results;
+    }
 }

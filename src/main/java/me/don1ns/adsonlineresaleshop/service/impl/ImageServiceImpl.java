@@ -10,10 +10,14 @@ import org.webjars.NotFoundException;
 import java.io.IOException;
 
 @Transactional
-@RequiredArgsConstructor
 @Service
 public class ImageServiceImpl implements ImageService {
     private final ImageRepository imageRepository;
+
+    public ImageServiceImpl(ImageRepository imageRepository) {
+        this.imageRepository = imageRepository;
+    }
+
     @Override
     public Image uploadImage(MultipartFile imageFile) throws IOException {
         Image image = new Image();

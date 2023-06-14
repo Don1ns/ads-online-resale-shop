@@ -2,10 +2,9 @@ package me.don1ns.adsonlineresaleshop.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import me.don1ns.adsonlineresaleshop.DTO.Role;
 
-import javax.management.relation.Role;
 import java.time.Instant;
-import java.util.List;
 
 
 /**
@@ -22,7 +21,7 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
     private String email;
     private String username;
     private String password;
@@ -36,11 +35,11 @@ public class User {
     @JoinColumn(name = "img_id")
     private Image image;
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -106,5 +105,13 @@ public class User {
 
     public void setImage(Image image) {
         this.image = image;
+    }
+
+    public Instant getRegDate() {
+        return regDate;
+    }
+
+    public void setRegDate(Instant regDate) {
+        this.regDate = regDate;
     }
 }

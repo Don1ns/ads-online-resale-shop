@@ -12,10 +12,10 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface CommentMapper {
 
-    @Mapping(source = "id", target = "pk")
-    @Mapping(source = "user.id", target = "author")
-    @Mapping(source = "user.image", target = "authorImage")
-    @Mapping(source = "user.firstName", target = "authorFirstName")
+    @Mapping(source = "pk", target = "id")
+    @Mapping(target = "user.id", source = "author")
+    @Mapping(target = "user.image.path", source = "authorImage")
+    @Mapping(target = "user.firstName", source = "authorFirstName")
     Comment toAdsComment(CommentDTO commentDTO);
     CommentDTO toCommentDto(Comment adsComment);
 

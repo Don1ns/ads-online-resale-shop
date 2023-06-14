@@ -17,11 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
-@RequiredArgsConstructor
 @Tag(name = "Аутентификация", description = "AuthenticationController")
 public class AuthenticationController {
-    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
     private final AuthenticationService authService;
+
+    public AuthenticationController(AuthenticationService authService) {
+        this.authService = authService;
+    }
 
     @Operation(summary = "Авторизация пользователя", description = "login", tags={ "Авторизация" })
     @PostMapping("/login")

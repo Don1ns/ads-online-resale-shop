@@ -24,12 +24,14 @@ public class WebSecurityConfig {
             "/webjars/**",
             "/login", "/register",
             "/ads",
-            "/ads/image/**"
+            "users/me/image/**",
+            "users/me"
     };
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .authorizeRequests((authz) -> authz
+                .authorizeRequests((auth) -> auth
                         .requestMatchers(HttpMethod.GET, "/ads").permitAll()
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .requestMatchers("/ads/**", "/users/**").authenticated()

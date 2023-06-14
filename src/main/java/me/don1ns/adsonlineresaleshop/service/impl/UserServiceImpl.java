@@ -8,11 +8,12 @@ import me.don1ns.adsonlineresaleshop.mapper.UserMapper;
 import me.don1ns.adsonlineresaleshop.repository.UserRepository;
 import me.don1ns.adsonlineresaleshop.security.MyUserDetails;
 import me.don1ns.adsonlineresaleshop.service.UserService;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-
+@Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
      private final UserMapper userMapper;
@@ -24,15 +25,15 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserDTO setPassword(NewPasswordDTO newPasswordDto, MyUserDetails currentUser) {
-        User user = checkUserByUsername(currentUser.getUsername());
+    public void setPassword(NewPasswordDTO newPasswordDto, String userName) {
+        User user = checkUserByUsername(userName);
+        user.setPassword(newPasswordDto.getNewPassword());
         userRepository.save(user);
-        return userMapper.toDto(user);
     }
 
     @Override
-    public UserDTO getUser(MyUserDetails currentUser) {
-        User user = userRepository.findByUsername(currentUser.getUsername());
+    public UserDTO getUser(String userName) {
+        User user = userRepository.findByUsername(userName);
         if (user != null) {
             return userMapper.toDto(user);
         } else {
@@ -41,13 +42,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean updateUser(User userDto, MyUserDetails currentUser) {
-        User user = checkUserByUsername(currentUser.getUsername());
+    public UserDTO updateUser(UserDTO userDto, String userName) {
+        User user = checkUserByUsername(userName);
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setPhone(userDto.getPhone());
         userRepository.save(user);
-        return true;
+        return userMapper.toDto(user);
     }
 
     @Override

@@ -8,9 +8,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 public interface UserService {
-    UserDTO setPassword(NewPasswordDTO newPasswordDto, MyUserDetails currentUser);
-    UserDTO getUser(MyUserDetails currentUser);
-    boolean updateUser(User userDto, MyUserDetails currentUser);
+    void setPassword(NewPasswordDTO newPasswordDto, String userName);
+    UserDTO getUser(String userName);
+    UserDTO updateUser(UserDTO userDto, String userName);
     User checkUserByUsername(String username);
     User updateUserImage(MultipartFile image, MyUserDetails currentUser) throws IOException;
 }

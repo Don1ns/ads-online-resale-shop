@@ -1,6 +1,9 @@
 package me.don1ns.adsonlineresaleshop.service.impl;
 
 import jakarta.validation.ValidationException;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import me.don1ns.adsonlineresaleshop.DTO.RegisterReqDTO;
 import me.don1ns.adsonlineresaleshop.entity.User;
@@ -8,15 +11,16 @@ import me.don1ns.adsonlineresaleshop.mapper.UserMapper;
 import me.don1ns.adsonlineresaleshop.repository.UserRepository;
 import me.don1ns.adsonlineresaleshop.security.UserDetailsServiceImpl;
 import me.don1ns.adsonlineresaleshop.service.AuthenticationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
-@RequiredArgsConstructor
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
 
@@ -24,6 +28,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder encoder;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+
+    public AuthenticationServiceImpl(UserDetailsServiceImpl userDetailsServiceImpl, PasswordEncoder encoder, UserRepository userRepository, UserMapper userMapper) {
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
+        this.encoder = encoder;
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
+    }
 
     @Override
     public boolean login(String userName, String password) {
