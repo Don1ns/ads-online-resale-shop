@@ -28,15 +28,14 @@ public class WebSecurityConfig {
     };
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http.csrf(csrf -> csrf.disable())
                 .authorizeRequests((authz) -> authz
                         .requestMatchers(HttpMethod.GET, "/ads").permitAll()
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .requestMatchers("/ads/**", "/users/**").authenticated()
                         .requestMatchers("/users/**").hasAnyAuthority("ADMIN", "USER")
                 )
-                .cors()
-                .and()
+                .cors(cors -> cors.disable())
                 .httpBasic(withDefaults());
         return http.build();
     }
