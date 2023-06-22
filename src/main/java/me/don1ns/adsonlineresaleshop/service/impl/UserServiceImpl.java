@@ -8,6 +8,8 @@ import me.don1ns.adsonlineresaleshop.mapper.UserMapper;
 import me.don1ns.adsonlineresaleshop.repository.UserRepository;
 import me.don1ns.adsonlineresaleshop.security.MyUserDetails;
 import me.don1ns.adsonlineresaleshop.service.UserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,10 +19,12 @@ import java.io.IOException;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
      private final UserMapper userMapper;
+    private final PasswordEncoder encoder;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, PasswordEncoder encoder) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.encoder = encoder;
     }
 
 
@@ -32,13 +36,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO getUser(String userName) {
-        User user = userRepository.findByUsername(userName);
-        if (user != null) {
-            return userMapper.toDto(user);
-        } else {
-            return null;
-        }
+    public User getUserById(int id) {
+        return userRepository.findById(id).orElseThrow();
+    }
+
+    @Override
+    public User getUser(String userName) {
+        return userRepository.findUserByEmail(userName).orElseThrow(UserNotFoundException::new);
+    }
+
+    @Override
+    public UserDTO getUser(Authentication authentication) {
+        User user = getUser(authentication.getName());
+        return userMapper.toDto(user);
     }
 
     @Override
@@ -53,7 +63,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User checkUserByUsername(String username) {
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findUserByEmail(username).orElseThrow(UserNotFoundException::new);
         if (user == null) {
             throw new UserNotFoundException(toString());
         }
@@ -62,7 +72,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUserImage(MultipartFile image, MyUserDetails currentUser) throws IOException {
-        User user = userRepository.findByUsername(currentUser.getUsername());
+        User user = userRepository.findUserByEmail(currentUser.getUsername()).orElseThrow(UserNotFoundException::new);
         // Save the image to the server
         String fileName = image.getOriginalFilename();
         String fileExtension = fileName.substring(fileName.lastIndexOf("."));

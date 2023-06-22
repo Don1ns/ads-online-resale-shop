@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import me.don1ns.adsonlineresaleshop.DTO.*;
-import me.don1ns.adsonlineresaleshop.entity.Image;
 import me.don1ns.adsonlineresaleshop.entity.User;
 import me.don1ns.adsonlineresaleshop.service.AdsService;
 import me.don1ns.adsonlineresaleshop.service.CommentService;
@@ -29,6 +28,13 @@ public class AdsController {
     private CommentService commentService;
     private UserService userService;
 
+    public AdsController(AdsService adsService, ImageService imageService, CommentService commentService, UserService userService) {
+        this.adsService = adsService;
+        this.imageService = imageService;
+        this.commentService = commentService;
+        this.userService = userService;
+    }
+
     // Получить все объявления
     @Operation(
             summary = "Получить все объявления",
@@ -44,7 +50,7 @@ public class AdsController {
                     )
             }
     )
-    @GetMapping("/")
+    @GetMapping()
     public ResponseEntity<ResponseWrapperAds> getAllAds() {
         return ResponseEntity.ok(adsService.getAllAds());
     }
@@ -65,7 +71,7 @@ public class AdsController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized")
             }
     )
-    @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AdsDTO> addAds(@RequestParam("properties") CreateAdsDTO createAds, @RequestParam("image") MultipartFile image, Authentication authentication) {
         User user = userService.checkUserByUsername(authentication.getName());
         if (user != null) {

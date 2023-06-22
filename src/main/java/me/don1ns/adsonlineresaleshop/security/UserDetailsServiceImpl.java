@@ -1,34 +1,47 @@
 package me.don1ns.adsonlineresaleshop.security;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import me.don1ns.adsonlineresaleshop.DTO.RegisterReqDTO;
+import me.don1ns.adsonlineresaleshop.DTO.Role;
 import me.don1ns.adsonlineresaleshop.entity.User;
 import me.don1ns.adsonlineresaleshop.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.acls.model.AlreadyExistsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    public UserDetailsServiceImpl(UserRepository userRepository) {
+    public UserDetailsServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = getUserByUsername(username);
+        User user = userRepository.findUserByEmail(username).orElseThrow();
         return new MyUserDetails(user);
     }
 
-    private User getUserByUsername(String username) {
-        return userRepository.findByEmailIgnoreCase(username).orElseThrow(() ->
-                new UsernameNotFoundException(String.format("Пользователь с email: \"%s\" не найден", username)));
+    public void createUser(RegisterReqDTO registerReqDTO) {
+        if (userRepository.existsByEmailIgnoreCase(registerReqDTO.getUsername())) {
+            throw new AlreadyExistsException("User already exist");
+        }
+        User user = new User();
+        user.setFirstName(registerReqDTO.getFirstName());
+        user.setLastName(registerReqDTO.getLastName());
+        user.setEmail(registerReqDTO.getUsername());
+        user.setPassword(passwordEncoder.encode(registerReqDTO.getPassword()));
+        user.setPhone(registerReqDTO.getPhone());
+        user.setRole(Role.USER);
+
+        userRepository.save(user);
     }
 }

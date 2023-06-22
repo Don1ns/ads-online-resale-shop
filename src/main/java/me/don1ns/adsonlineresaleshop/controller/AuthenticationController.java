@@ -2,7 +2,7 @@ package me.don1ns.adsonlineresaleshop.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import me.don1ns.adsonlineresaleshop.DTO.LoginReqDTO;
 import me.don1ns.adsonlineresaleshop.DTO.RegisterReqDTO;
 import me.don1ns.adsonlineresaleshop.service.AuthenticationService;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
-@Tag(name = "Аутентификация", description = "AuthenticationController")
+@Tag(name = "Аутентификация",   description = "AuthenticationController")
 public class AuthenticationController {
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
     private final AuthenticationService authService;

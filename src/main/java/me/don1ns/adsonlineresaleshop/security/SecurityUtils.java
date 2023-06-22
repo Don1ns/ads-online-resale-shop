@@ -5,6 +5,9 @@ import me.don1ns.adsonlineresaleshop.entity.Ads;
 import me.don1ns.adsonlineresaleshop.entity.Comment;
 import me.don1ns.adsonlineresaleshop.entity.User;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Service;
+
+@Service
 
 public class SecurityUtils {
     public SecurityUtils() {
@@ -13,7 +16,7 @@ public class SecurityUtils {
     public static void checkPermissionToAds(Ads ads, User user) {
         MyUserDetails userDetails = new MyUserDetails(user);
 
-        if (!userDetails.getAuthorities().contains(Role.ADMIN) && userDetails.getId() != ads.getUser().getId()) {
+        if (!userDetails.getAuthorities().contains(Role.ADMIN) && userDetails.getUser().getId() != ads.getUser().getId()) {
             throw new AccessDeniedException("Чтобы изменить/удалить объявление, нужно иметь роль ADMIN или быть владельцем этого объявления");
         }
     }
@@ -21,7 +24,7 @@ public class SecurityUtils {
     public static void checkPermissionToAdsComment(Comment adsComment, User user) {
         MyUserDetails userDetails = new MyUserDetails(user);
 
-        if (!userDetails.getAuthorities().contains(Role.ADMIN) && userDetails.getId() != adsComment.getUser().getId()) {
+        if (!userDetails.getAuthorities().contains(Role.ADMIN) && userDetails.getUser().getId() != adsComment.getUser().getId()) {
             throw new AccessDeniedException("Чтобы изменить/удалить комментарий, нужно иметь роль ADMIN или быть владельцем этого комментария");
         }
     }

@@ -1,24 +1,59 @@
 package me.don1ns.adsonlineresaleshop.security;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import me.don1ns.adsonlineresaleshop.entity.User;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.List;
-@Getter
-public class MyUserDetails extends org.springframework.security.core.userdetails.User{
-    private final int id;
+public class MyUserDetails implements UserDetails {
+
+    private final User user;
 
     public MyUserDetails(User user) {
-        super(user.getEmail(), user.getPassword(), List.of((GrantedAuthority) user.getRole()));
-        this.id = user.getId();
+        this.user = user;
     }
 
     @Override
-    public void eraseCredentials() {
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(user.getRole().name()));
     }
 
-    public int getId() {
-        return id;
+    @Override
+    public String getPassword() {
+        return user.getPassword();
+    }
+
+    @Override
+    public String getUsername() {
+        return user.getEmail();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public User getUser() {
+        return user;
     }
 }

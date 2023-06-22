@@ -16,13 +16,14 @@ import me.don1ns.adsonlineresaleshop.service.CommentService;
 import me.don1ns.adsonlineresaleshop.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
 import java.util.List;
 
 import static me.don1ns.adsonlineresaleshop.constant.Constant.COMMENT_NOT_BELONG_AD_MSG;
 import static me.don1ns.adsonlineresaleshop.constant.Constant.COMMENT_NOT_FOUND_MSG;
-
+@Service
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final AdsRepository adsRepository;
