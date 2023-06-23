@@ -16,18 +16,18 @@ public interface AdsMapper {
     @Mapping(source = "user.lastName", target = "authorLastName")
     @Mapping(source = "user.email", target = "email")
     @Mapping(source = "user.phone", target = "phone")
-    @Mapping(source = "image.path", target = "image")
+    @Mapping(source = "imageId", target = "image")
     FullAdsDTO toFullAdsDto(Ads ads);
 
     @Mapping(source = "user.id", target = "authorId")
-    @Mapping(source = "image.path", target = "image")
+    @Mapping(source = "imageId", target = "image")
     AdsDTO toAdsDto(Ads ads);
 
     @Mapping(source = "authorFirstName", target = "user.firstName")
     @Mapping(source = "authorLastName", target = "user.lastName")
     @Mapping(source = "email", target = "user.email")
     @Mapping(source = "phone", target = "user.phone")
-    @Mapping(source = "image", target = "image.path")
+    @Mapping(source = "image", target = "imageId")
     Ads toAds(FullAdsDTO fullAdsDTO);
     Ads toAds(CreateAdsDTO createAdsDTO);
 

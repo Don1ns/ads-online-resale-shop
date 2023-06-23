@@ -52,13 +52,16 @@ public class AdsServiceImpl implements AdsService {
         return response;
     }
 
+
     @Override
-    public AdsDTO updateImage(int id, Image image) {
+    public AdsDTO updateImage(int id, String imageId) {
         Ads ads = repository.findById(id).orElseThrow(AdNotFoundException::new);
-        ads.setImage(image);
+        ads.setImageId(imageId);
         repository.save(ads);
         return adsMapper.toAdsDto(ads);
     }
+
+
 
     @Override
     public void deleteById(int id) {
@@ -71,9 +74,12 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public AdsDTO adAd(CreateAdsDTO createAdsDTO, Image image, User user) {
-        Ads ads = adsMapper.toAds(createAdsDTO);
-        ads.setImage(image);
+    public AdsDTO adAd(CreateAdsDTO createAdsDTO, String imageId, User user) {
+        Ads ads = new Ads();
+        ads.setDescription(createAdsDTO.getDescription());
+        ads.setPrice(createAdsDTO.getPrice());
+        ads.setTitle(createAdsDTO.getTitle());
+        ads.setImageId(imageId);
         ads.setUser(user);
         repository.save(ads);
         return adsMapper.toAdsDto(ads);

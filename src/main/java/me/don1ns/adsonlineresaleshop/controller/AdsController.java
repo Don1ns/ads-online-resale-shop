@@ -1,16 +1,21 @@
 package me.don1ns.adsonlineresaleshop.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import me.don1ns.adsonlineresaleshop.DTO.*;
 import me.don1ns.adsonlineresaleshop.entity.Ads;
+import me.don1ns.adsonlineresaleshop.entity.Image;
 import me.don1ns.adsonlineresaleshop.entity.User;
 import me.don1ns.adsonlineresaleshop.service.AdsService;
 import me.don1ns.adsonlineresaleshop.service.CommentService;
 import me.don1ns.adsonlineresaleshop.service.ImageService;
 import me.don1ns.adsonlineresaleshop.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +33,8 @@ public class AdsController {
     private ImageService imageService;
     private CommentService commentService;
     private UserService userService;
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     public AdsController(AdsService adsService, ImageService imageService, CommentService commentService, UserService userService) {
         this.adsService = adsService;
@@ -71,15 +78,13 @@ public class AdsController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized")
             }
     )
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping()
     public ResponseEntity<AdsDTO> addAds(@RequestParam("properties") CreateAdsDTO createAds, @RequestParam("image") MultipartFile image, Authentication authentication) {
+        printLogInfo("/ads/", "post", "/ads/");
         User user = userService.checkUserByUsername(authentication.getName());
         if (user != null) {
-            try {
-                return ResponseEntity.status(HttpStatus.CREATED).body(adsService.adAd(createAds, imageService.uploadImage(image), user));
-            } catch (IOException e) {
-                return ResponseEntity.badRequest().build();
-            }
+            String imageId = imageService.uploadImage(image);
+            return ResponseEntity.status(HttpStatus.CREATED).body(adsService.adAd(createAds, imageId, user));
         } else {
             return ResponseEntity.status(401).build();
         }
@@ -180,11 +185,7 @@ public class AdsController {
     )
     @PatchMapping("/{id}/image")
     public ResponseEntity<AdsDTO> updateImage(@PathVariable int id, @RequestParam MultipartFile image) {
-        try {
-            return ResponseEntity.ok(adsService.updateImage(id, imageService.uploadImage(image)));
-        } catch (IOException e) {
-            return ResponseEntity.status(403).build();
-        }
+        return ResponseEntity.ok(adsService.updateImage(id, imageService.uploadImage(image)));
     }
 
     // Получить комментарии объявления
@@ -265,6 +266,11 @@ public class AdsController {
     public ResponseEntity<CommentDTO> updateComment(@PathVariable int adId, @PathVariable int commentId,
                                                     @RequestBody CommentDTO comment, Authentication authentication) {
         return ResponseEntity.ok(commentService.updateComment(adId, commentId, comment, authentication));
+    }
+
+    private void printLogInfo(String name, String requestMethod, String path) {
+        logger.info("Вызван метод " + name + ", адрес "
+                + requestMethod.toUpperCase() + " запроса " + path);
     }
 
 }

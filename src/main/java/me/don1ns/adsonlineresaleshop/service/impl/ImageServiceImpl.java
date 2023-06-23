@@ -1,5 +1,4 @@
 package me.don1ns.adsonlineresaleshop.service.impl;
-import lombok.RequiredArgsConstructor;
 import me.don1ns.adsonlineresaleshop.entity.Image;
 import me.don1ns.adsonlineresaleshop.repository.ImageRepository;
 import me.don1ns.adsonlineresaleshop.service.ImageService;
@@ -8,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
 import java.io.IOException;
+import java.util.UUID;
 
-@Transactional
 @Service
 public class ImageServiceImpl implements ImageService {
     private final ImageRepository imageRepository;
@@ -19,15 +18,21 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Image uploadImage(MultipartFile imageFile) throws IOException {
+    public String uploadImage(MultipartFile imageFile) {
         Image image = new Image();
-        image.setImage(imageFile.getBytes());
-        image.setSize(imageFile.getSize());
-        image.setMediaType(imageFile.getContentType());
-        return imageRepository.save(image);
+        try {
+            byte[] bytes = imageFile.getBytes();
+            image.setImage(bytes);
+        } catch (IOException e) {
+            throw new RuntimeException("Проблемы с получением байтов");
+        }
+        image.setId(UUID.randomUUID().toString());
+        imageRepository.save(image);
+        Image savedImage = imageRepository.saveAndFlush(image);
+        return savedImage.getId();
     }
     @Override
-    public Image getImageById(long id) {
+    public Image getImageById(String id) {
         return imageRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Image with id " + id + " not found!"));
     }

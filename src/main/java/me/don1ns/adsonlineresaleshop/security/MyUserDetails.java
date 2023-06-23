@@ -1,3 +1,4 @@
+/*
 package me.don1ns.adsonlineresaleshop.security;
 
 import me.don1ns.adsonlineresaleshop.entity.User;
@@ -53,4 +54,7 @@ public class MyUserDetails implements UserDetails {
     public User getUser() {
         return user;
     }
+
 }
+
+ */

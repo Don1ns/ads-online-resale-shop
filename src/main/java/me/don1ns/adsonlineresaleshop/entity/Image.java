@@ -2,6 +2,9 @@ package me.don1ns.adsonlineresaleshop.entity;
 
 import javax.persistence.*;
 import lombok.*;
+import org.hibernate.Hibernate;
+
+import java.util.Objects;
 
 /**
  * @author Loginova Viktoria (Логинова Виктория)
@@ -12,60 +15,33 @@ import lombok.*;
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private Long size;
-    private String mediaType;
-    private String path;
+    private String id;
+    @Lob
     private byte[] image;
-    @ManyToOne()
-    @JoinColumn(name = "ads_id")
-    private Ads ads;
 
-    public Long getId() {
-        return id;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Image adsEntity = (Image) o;
+        return id != null && Objects.equals(id, adsEntity.id);
     }
-
-    public void setId(Long id) {
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+    public String getId() {
+        return this.id;
+    }
+    public byte[] getImage() {
+        return this.image;
+    }
+    public void setId(String id) {
         this.id = id;
     }
-
-    public Long getSize() {
-        return size;
-    }
-
-    public void setSize(Long size) {
-        this.size = size;
-    }
-
-    public String getMediaType() {
-        return mediaType;
-    }
-
-    public void setMediaType(String mediaType) {
-        this.mediaType = mediaType;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public byte[] getImage() {
-        return image;
-    }
-
     public void setImage(byte[] image) {
         this.image = image;
-    }
-
-    public Ads getAds() {
-        return ads;
-    }
-
-    public void setAds(Ads ads) {
-        this.ads = ads;
+    }    public String toString() {
+        return "AdsEntity(id=" + this.getId() + ", image=" + java.util.Arrays.toString(this.getImage()) + ")";
     }
 }

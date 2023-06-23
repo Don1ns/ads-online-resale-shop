@@ -60,7 +60,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new RuntimeException("user already exist");
         }
         user.setPassword(encoder.encode(user.getPassword()));
-        user.setRegDate(Instant.now());
         userRepository.save(user);
         return true;
     }

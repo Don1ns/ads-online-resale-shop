@@ -13,9 +13,9 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    @Mapping(source = "image", target = "image.path")
+    @Mapping(source = "image", target = "imageId")
     User toUser(UserDTO userDTO);
-    @Mapping(source = "image.path", target = "image")
+    @Mapping(source = "imageId", target = "image")
     UserDTO toDto(User user);
 
     //Маперы для регистрации

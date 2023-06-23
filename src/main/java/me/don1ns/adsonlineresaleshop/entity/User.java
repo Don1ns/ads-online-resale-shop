@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 
@@ -31,42 +30,20 @@ public class User implements UserDetails {
     private String firstName;
     private String lastName;
     private String phone;
-    private Instant regDate;
     @Enumerated(EnumType.STRING)
     private Role role;
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "img_id")
-    private Image image;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    private String imageId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(getRole().name()));
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     @Override
     public String getUsername() {
-        return getEmail();
+        return email;
     }
+
 
     @Override
     public boolean isAccountNonExpired() {
@@ -86,6 +63,26 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public void setPassword(String password) {
@@ -124,19 +121,11 @@ public class User implements UserDetails {
         this.role = role;
     }
 
-    public Image getImage() {
-        return image;
+    public String getImageId() {
+        return imageId;
     }
 
-    public void setImage(Image image) {
-        this.image = image;
-    }
-
-    public Instant getRegDate() {
-        return regDate;
-    }
-
-    public void setRegDate(Instant regDate) {
-        this.regDate = regDate;
+    public void setImageId(String imageId) {
+        this.imageId = imageId;
     }
 }

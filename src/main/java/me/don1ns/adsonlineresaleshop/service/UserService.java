@@ -2,7 +2,6 @@ package me.don1ns.adsonlineresaleshop.service;
 
 import me.don1ns.adsonlineresaleshop.DTO.*;
 import me.don1ns.adsonlineresaleshop.entity.User;
-import me.don1ns.adsonlineresaleshop.security.MyUserDetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,7 +19,7 @@ public interface UserService {
 
     UserDTO updateUser(UserDTO userDto, String userName);
     User checkUserByUsername(String username);
-    User updateUserImage(MultipartFile image, MyUserDetails currentUser) throws IOException;
+    User updateUserImage(MultipartFile image, User currentUser) throws IOException;
 }
 
 

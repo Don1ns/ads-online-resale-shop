@@ -13,10 +13,10 @@ public interface AdsService {
     void save(Ads ads);
     void deleteById(int id);
     Ads getById(int id);
-    AdsDTO adAd(CreateAdsDTO createAdsDTO, Image image, User user);
+    AdsDTO adAd(CreateAdsDTO createAdsDTO, String imageId, User user);
     ResponseWrapperAds<Ads> getAllAds();
     FullAdsDTO getAdInfo(int id);
     AdsDTO update(int id, CreateAdsDTO createAdsDTO);
     ResponseWrapperAds<Ads> getAllUserAds(String userName);
-    AdsDTO updateImage(int id, Image image);
+    AdsDTO updateImage(int id, String imageId);
 }

@@ -7,7 +7,6 @@ import me.don1ns.adsonlineresaleshop.entity.User;
 import me.don1ns.adsonlineresaleshop.exception.UserNotFoundException;
 import me.don1ns.adsonlineresaleshop.mapper.UserMapper;
 import me.don1ns.adsonlineresaleshop.repository.UserRepository;
-import me.don1ns.adsonlineresaleshop.security.MyUserDetails;
 import me.don1ns.adsonlineresaleshop.service.UserService;;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -79,7 +78,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUserImage(MultipartFile image, MyUserDetails currentUser) throws IOException {
+    public User updateUserImage(MultipartFile image, User currentUser) throws IOException {
         User user = userRepository.findByEmail(currentUser.getUsername());
         // Save the image to the server
         String fileName = image.getOriginalFilename();
@@ -89,7 +88,7 @@ public class UserServiceImpl implements UserService {
         image.transferTo(file);
 
         // Update the user's image URL
-        user.setImage((Image) image);
+
         userRepository.save(user);
 
         return user;
