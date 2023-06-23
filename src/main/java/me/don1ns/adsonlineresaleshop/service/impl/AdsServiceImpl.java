@@ -46,7 +46,7 @@ public class AdsServiceImpl implements AdsService {
     @Override
     public ResponseWrapperAds<Ads> getAllUserAds(String userName) {
         ResponseWrapperAds<Ads> response = new ResponseWrapperAds<>();
-        List<Ads> list = repository.findAdsByUserName(userName);
+        List<Ads> list = repository.findAdsByUser_Email(userName);
         response.setCount(list.size());
         response.setResults(list);
         return response;

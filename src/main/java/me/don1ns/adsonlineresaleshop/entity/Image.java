@@ -1,6 +1,6 @@
 package me.don1ns.adsonlineresaleshop.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 
 /**

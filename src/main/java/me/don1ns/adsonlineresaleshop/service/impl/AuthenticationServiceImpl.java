@@ -1,6 +1,7 @@
 package me.don1ns.adsonlineresaleshop.service.impl;
 
-import jakarta.validation.ValidationException;
+import javax.xml.bind.ValidationException;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -56,7 +57,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public boolean register(RegisterReqDTO registerReqDTO) {
         User user = userMapper.toEntity(registerReqDTO);
         if (userRepository.existsByEmailIgnoreCase(user.getEmail())) {
-            throw new ValidationException(String.format("User \"%s\" is already registered!", user.getEmail()));
+            throw new RuntimeException("user already exist");
         }
         user.setPassword(encoder.encode(user.getPassword()));
         user.setRegDate(Instant.now());

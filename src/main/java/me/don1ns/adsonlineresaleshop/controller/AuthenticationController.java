@@ -2,7 +2,6 @@ package me.don1ns.adsonlineresaleshop.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.extern.slf4j.Slf4j;
 import me.don1ns.adsonlineresaleshop.DTO.LoginReqDTO;
 import me.don1ns.adsonlineresaleshop.DTO.RegisterReqDTO;
 import me.don1ns.adsonlineresaleshop.service.AuthenticationService;

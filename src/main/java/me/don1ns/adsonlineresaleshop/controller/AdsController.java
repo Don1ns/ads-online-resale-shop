@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import me.don1ns.adsonlineresaleshop.DTO.*;
+import me.don1ns.adsonlineresaleshop.entity.Ads;
 import me.don1ns.adsonlineresaleshop.entity.User;
 import me.don1ns.adsonlineresaleshop.service.AdsService;
 import me.don1ns.adsonlineresaleshop.service.CommentService;
@@ -34,7 +35,6 @@ public class AdsController {
         this.commentService = commentService;
         this.userService = userService;
     }
-
     // Получить все объявления
     @Operation(
             summary = "Получить все объявления",
@@ -159,7 +159,7 @@ public class AdsController {
             }
     )
     @GetMapping("/me")
-    public ResponseEntity<ResponseWrapperAds> getAdsMe(Authentication authentication) {
+    public ResponseEntity<ResponseWrapperAds<Ads>> getAdsMe(Authentication authentication) {
         return ResponseEntity.ok(adsService.getAllUserAds(authentication.getName()));
     }
 

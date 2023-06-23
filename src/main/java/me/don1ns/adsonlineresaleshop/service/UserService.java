@@ -9,6 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 public interface UserService {
+    void createUser(User user);
+
     void setPassword(NewPasswordDTO newPasswordDto, String userName);
 
     User getUserById(int id);

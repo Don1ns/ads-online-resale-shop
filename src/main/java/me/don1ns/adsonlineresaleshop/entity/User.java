@@ -1,10 +1,17 @@
 package me.don1ns.adsonlineresaleshop.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 import me.don1ns.adsonlineresaleshop.DTO.Role;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.time.Instant;
+import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -13,16 +20,13 @@ import java.time.Instant;
 @Data
 @Entity
 @Table(name = "users")
-@NoArgsConstructor
-@EqualsAndHashCode
-@AllArgsConstructor
-@Getter
-@Setter
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "username")
     private String email;
+    @Column(name = "password")
     private String password;
     private String firstName;
     private String lastName;
@@ -50,8 +54,38 @@ public class User {
         this.email = email;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(getRole().name()));
+    }
+
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return getEmail();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     public void setPassword(String password) {

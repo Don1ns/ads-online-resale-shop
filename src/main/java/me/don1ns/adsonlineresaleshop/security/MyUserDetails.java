@@ -1,9 +1,6 @@
 package me.don1ns.adsonlineresaleshop.security;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import me.don1ns.adsonlineresaleshop.entity.User;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
