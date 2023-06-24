@@ -68,10 +68,10 @@ public class AdsController {
             }
     )
     @PostMapping()
-    public ResponseEntity<Ads> addAds(@RequestParam("properties") CreateAdsDTO createAds, @RequestParam("image") MultipartFile image, Authentication authentication) {
+    public ResponseEntity<AdsDTO> addAds(@RequestBody CreateAdsDTO createAds, @RequestParam("file") MultipartFile file, Authentication authentication) {
         printLogInfo("/ads/", "post", "/ads/");
-        Ads ads = adsService.adAd(createAds, image, authentication);
-        return ResponseEntity.ok(ads);
+        AdsDTO adsDTO = adsService.adAd(createAds, file, authentication);
+        return ResponseEntity.ok(adsDTO);
     }
 
     // Получить информацию об объявлении

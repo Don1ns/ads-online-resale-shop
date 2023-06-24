@@ -36,6 +36,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "image")
     private Image image;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

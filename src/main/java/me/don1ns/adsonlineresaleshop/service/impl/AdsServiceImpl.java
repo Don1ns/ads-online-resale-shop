@@ -82,7 +82,7 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public Ads adAd(CreateAdsDTO createAdsDTO, MultipartFile file, Authentication authentication) {
+    public AdsDTO adAd(CreateAdsDTO createAdsDTO, MultipartFile file, Authentication authentication) {
         Ads ads = new Ads();
         ads.setDescription(createAdsDTO.getDescription());
         ads.setPrice(createAdsDTO.getPrice());
@@ -95,7 +95,7 @@ public class AdsServiceImpl implements AdsService {
         ads.setUser(userService.getUser(authentication.getName()));
 
         repository.save(ads);
-        return ads;
+        return adsMapper.toAdsDto(ads);
     }
 
     @Override

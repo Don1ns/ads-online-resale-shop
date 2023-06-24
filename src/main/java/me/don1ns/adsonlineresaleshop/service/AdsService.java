@@ -14,7 +14,7 @@ public interface AdsService {
     void save(Ads ads);
     void deleteById(int id);
     Ads getById(int id);
-    Ads adAd(CreateAdsDTO createAdsDTO, MultipartFile file, Authentication authentication);
+    AdsDTO adAd(CreateAdsDTO createAdsDTO, MultipartFile file, Authentication authentication);
     ResponseWrapperAds<Ads> getAllAds();
     FullAdsDTO getAdInfo(int id);
     AdsDTO update(int id, CreateAdsDTO createAdsDTO);
