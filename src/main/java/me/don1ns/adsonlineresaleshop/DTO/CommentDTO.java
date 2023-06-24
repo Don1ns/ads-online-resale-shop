@@ -9,7 +9,7 @@ public class CommentDTO {
     private String authorImage;
     private String authorFirstName;
     private long createdAt;
-    private long pk;
+    private int pk;
     private String text;
 
     public int getAuthor() {
@@ -44,11 +44,11 @@ public class CommentDTO {
         this.createdAt = createdAt;
     }
 
-    public long getPk() {
+    public int getPk() {
         return pk;
     }
 
-    public void setPk(long pk) {
+    public void setPk(int pk) {
         this.pk = pk;
     }
 

@@ -32,7 +32,9 @@ public class User implements UserDetails {
     private String phone;
     @Enumerated(EnumType.STRING)
     private Role role;
-    private String imageId;
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "img_id")
+    private Image image;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -121,11 +123,11 @@ public class User implements UserDetails {
         this.role = role;
     }
 
-    public String getImageId() {
-        return imageId;
+    public Image getImage() {
+        return image;
     }
 
-    public void setImageId(String imageId) {
-        this.imageId = imageId;
+    public void setImage(Image image) {
+        this.image = image;
     }
 }

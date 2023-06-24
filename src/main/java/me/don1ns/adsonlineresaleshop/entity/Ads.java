@@ -18,8 +18,9 @@ public class Ads {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    private String imageId;
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "img_id")
+    private Image image;
     private int price;
     private String title;
     private String description;
@@ -35,12 +36,12 @@ public class Ads {
         this.id = id;
     }
 
-    public String getImageId() {
-        return imageId;
+    public Image getImage() {
+        return image;
     }
 
-    public void setImageId(String imageId) {
-        this.imageId = imageId;
+    public void setImage(Image image) {
+        this.image = image;
     }
 
     public int getPrice() {

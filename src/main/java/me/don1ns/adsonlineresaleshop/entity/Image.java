@@ -11,13 +11,17 @@ import java.util.Objects;
  **/
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "image")
 public class Image {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     @Lob
     private byte[] image;
+    @ManyToOne()
+    @JoinColumn(name = "ads_id")
+    private Ads ads;
 
     @Override
     public boolean equals(Object o) {
@@ -41,7 +45,8 @@ public class Image {
     }
     public void setImage(byte[] image) {
         this.image = image;
-    }    public String toString() {
+    }
+    public String toString() {
         return "AdsEntity(id=" + this.getId() + ", image=" + java.util.Arrays.toString(this.getImage()) + ")";
     }
 }

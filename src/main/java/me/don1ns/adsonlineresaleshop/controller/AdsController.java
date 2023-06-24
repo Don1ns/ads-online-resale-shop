@@ -30,15 +30,13 @@ import java.io.IOException;
 @CrossOrigin(value = "http://localhost:3000")
 public class AdsController {
     private AdsService adsService;
-    private ImageService imageService;
     private CommentService commentService;
     private UserService userService;
 
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
-    public AdsController(AdsService adsService, ImageService imageService, CommentService commentService, UserService userService) {
+    public AdsController(AdsService adsService, CommentService commentService, UserService userService) {
         this.adsService = adsService;
-        this.imageService = imageService;
         this.commentService = commentService;
         this.userService = userService;
     }
@@ -81,13 +79,8 @@ public class AdsController {
     @PostMapping()
     public ResponseEntity<AdsDTO> addAds(@RequestParam("properties") CreateAdsDTO createAds, @RequestParam("image") MultipartFile image, Authentication authentication) {
         printLogInfo("/ads/", "post", "/ads/");
-        User user = userService.checkUserByUsername(authentication.getName());
-        if (user != null) {
-            String imageId = imageService.uploadImage(image);
-            return ResponseEntity.status(HttpStatus.CREATED).body(adsService.adAd(createAds, imageId, user));
-        } else {
-            return ResponseEntity.status(401).build();
-        }
+        AdsDTO adsDTO = adsService.adAd(createAds, image, authentication);
+        return ResponseEntity.ok(adsDTO);
     }
 
     // Получить информацию об объявлении
@@ -185,7 +178,7 @@ public class AdsController {
     )
     @PatchMapping("/{id}/image")
     public ResponseEntity<AdsDTO> updateImage(@PathVariable int id, @RequestParam MultipartFile image) {
-        return ResponseEntity.ok(adsService.updateImage(id, imageService.uploadImage(image)));
+        return ResponseEntity.ok(adsService.updateImage(id, image));
     }
 
     // Получить комментарии объявления

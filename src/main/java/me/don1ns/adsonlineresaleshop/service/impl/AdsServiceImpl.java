@@ -11,7 +11,10 @@ import me.don1ns.adsonlineresaleshop.exception.AdNotFoundException;
 import me.don1ns.adsonlineresaleshop.mapper.AdsMapper;
 import me.don1ns.adsonlineresaleshop.repository.AdsRepository;
 import me.don1ns.adsonlineresaleshop.service.AdsService;
+import me.don1ns.adsonlineresaleshop.service.ImageService;
+import me.don1ns.adsonlineresaleshop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,11 +24,15 @@ import java.util.List;
 public class AdsServiceImpl implements AdsService {
     private final AdsRepository repository;
     private final AdsMapper adsMapper;
+    private final ImageService imageService;
+    private final UserService userService;
 
     @Autowired
-    public AdsServiceImpl(AdsRepository repository, AdsMapper adsMapper) {
+    public AdsServiceImpl(AdsRepository repository, AdsMapper adsMapper, ImageService imageService, UserService userService) {
         this.repository = repository;
         this.adsMapper = adsMapper;
+        this.imageService = imageService;
+        this.userService = userService;
     }
 
     @Override
@@ -54,9 +61,10 @@ public class AdsServiceImpl implements AdsService {
 
 
     @Override
-    public AdsDTO updateImage(int id, String imageId) {
+    public AdsDTO updateImage(int id, MultipartFile file) {
         Ads ads = repository.findById(id).orElseThrow(AdNotFoundException::new);
-        ads.setImageId(imageId);
+        Image image = imageService.uploadImage(file);
+        ads.setImage(image);
         repository.save(ads);
         return adsMapper.toAdsDto(ads);
     }
@@ -74,14 +82,15 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public AdsDTO adAd(CreateAdsDTO createAdsDTO, String imageId, User user) {
+    public AdsDTO adAd(CreateAdsDTO createAdsDTO, MultipartFile file, Authentication authentication) {
         Ads ads = new Ads();
         ads.setDescription(createAdsDTO.getDescription());
         ads.setPrice(createAdsDTO.getPrice());
         ads.setTitle(createAdsDTO.getTitle());
-        ads.setImageId(imageId);
-        ads.setUser(user);
-        repository.save(ads);
+        Image image = imageService.uploadImage(file);
+        ads.setImage(image);
+        ads.setUser(userService.getUser(authentication.getName()));
+        save(ads);
         return adsMapper.toAdsDto(ads);
     }
 

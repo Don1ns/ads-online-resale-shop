@@ -101,11 +101,6 @@
             <artifactId>tomcat-embed-core</artifactId>
             <version>9.0.70</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-core</artifactId>
-            <version>9.0.70</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/io.swagger/swagger-annotations -->
         <dependency>
             <groupId>io.springfox</groupId>

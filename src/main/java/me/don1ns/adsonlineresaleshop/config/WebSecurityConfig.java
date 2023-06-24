@@ -35,7 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
                 .authorizeRequests(auth -> auth
                         .mvcMatchers(AUTH_WHITELIST).permitAll()
-                        .mvcMatchers("/ads/**", "/users/**", "/ads/").authenticated()
+                        .mvcMatchers("/ads/**", "/users/**").authenticated()
                         .anyRequest().authenticated())
                 .cors()
                 .and()

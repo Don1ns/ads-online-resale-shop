@@ -36,10 +36,15 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
     @Override
-    public void setPassword(NewPasswordDTO newPasswordDto, String userName) {
+    public boolean setPassword(NewPasswordDTO newPasswordDto, String userName) {
         User user = checkUserByUsername(userName);
-        user.setPassword(newPasswordDto.getNewPassword());
-        userRepository.save(user);
+        if (user != null) {
+            String password = newPasswordDto.getNewPassword();
+            user.setPassword(encoder.encode(password));
+            userRepository.save(user);
+            return true;
+        }
+        return false;
     }
 
     @Override

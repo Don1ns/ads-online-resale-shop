@@ -26,9 +26,7 @@ public class UserController {
     // Обновление пароля
     @PostMapping("/set_password")
     public ResponseEntity<UserDTO> setPassword(@RequestBody NewPasswordDTO newPassword,  Authentication authentication) {
-        User user = userService.checkUserByUsername(authentication.getName());
-        if (user != null) {
-            userService.setPassword(newPassword, authentication.getName());
+        if (userService.setPassword(newPassword, authentication.getName())) {
             return ResponseEntity.ok().build();
         }
         else {
