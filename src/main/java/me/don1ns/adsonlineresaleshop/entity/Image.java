@@ -2,9 +2,6 @@ package me.don1ns.adsonlineresaleshop.entity;
 
 import javax.persistence.*;
 import lombok.*;
-import org.hibernate.Hibernate;
-
-import java.util.Objects;
 
 /**
  * @author Loginova Viktoria (Логинова Виктория)
@@ -16,37 +13,76 @@ import java.util.Objects;
 @Table(name = "image")
 public class Image {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+    private String name;
     @Lob
-    private byte[] image;
-    @ManyToOne()
-    @JoinColumn(name = "ads_id")
+    private byte[] bytes;
+    private String originalFileName;
+    private long size;
+    private String contentType;
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private Ads ads;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Image adsEntity = (Image) o;
-        return id != null && Objects.equals(id, adsEntity.id);
-    }
     @Override
     public int hashCode() {
         return getClass().hashCode();
     }
-    public String getId() {
-        return this.id;
+
+    public int getId() {
+        return id;
     }
-    public byte[] getImage() {
-        return this.image;
-    }
-    public void setId(String id) {
+
+    public void setId(int id) {
         this.id = id;
     }
-    public void setImage(byte[] image) {
-        this.image = image;
+
+    public Ads getAds() {
+        return ads;
+    }
+
+    public void setAds(Ads ads) {
+        this.ads = ads;
+    }
+
+    public byte[] getBytes() {
+        return this.bytes;
+    }
+    public void setBytes(byte[] bytes) {
+        this.bytes = bytes;
     }
     public String toString() {
-        return "AdsEntity(id=" + this.getId() + ", image=" + java.util.Arrays.toString(this.getImage()) + ")";
+        return "AdsEntity(id=" + this.getId() + ", image=" + java.util.Arrays.toString(this.getBytes()) + ")";
+    }
+
+    public String getOriginalFileName() {
+        return originalFileName;
+    }
+
+    public void setOriginalFileName(String originalFileName) {
+        this.originalFileName = originalFileName;
+    }
+
+    public long getSize() {
+        return size;
+    }
+
+    public void setSize(long size) {
+        this.size = size;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

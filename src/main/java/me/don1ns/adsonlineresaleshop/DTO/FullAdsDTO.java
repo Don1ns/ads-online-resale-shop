@@ -10,7 +10,7 @@ public class FullAdsDTO {
     private String authorLastName;
     private String description;
     private String email;
-    private String image;
+    private int imageId;
     private String phone;
     private int price;
     private String title;
@@ -55,12 +55,12 @@ public class FullAdsDTO {
         this.email = email;
     }
 
-    public String getImage() {
-        return image;
+    public int getImageId() {
+        return imageId;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setImageId(int imageId) {
+        this.imageId = imageId;
     }
 
     public String getPhone() {

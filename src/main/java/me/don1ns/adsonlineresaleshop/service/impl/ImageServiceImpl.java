@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
 import java.io.IOException;
-import java.util.UUID;
 
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -21,16 +20,19 @@ public class ImageServiceImpl implements ImageService {
         Image image = new Image();
         try {
             byte[] bytes = imageFile.getBytes();
-            image.setImage(bytes);
+            image.setBytes(bytes);
+            image.setSize(image.getSize());
+            image.setOriginalFileName(imageFile.getOriginalFilename());
+            image.setContentType(image.getContentType());
+            image.setName(image.getName());
+            Image savedImage = imageRepository.save(image);
+            return savedImage;
         } catch (IOException e) {
             throw new RuntimeException("Проблемы с получением байтов");
         }
-        image.setId(UUID.randomUUID().toString());
-        imageRepository.save(image);
-        return imageRepository.save(image);
     }
     @Override
-    public Image getImageById(String id) {
+    public Image getImageById(int id) {
         return imageRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Image with id " + id + " not found!"));
     }

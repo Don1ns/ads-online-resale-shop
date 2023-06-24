@@ -27,14 +27,19 @@ public class User implements UserDetails {
     private String email;
     @Column(name = "password")
     private String password;
+    @Column(name = "first_name")
     private String firstName;
+    @Column(name = "last_name")
     private String lastName;
+    @Column(name = "phone")
     private String phone;
     @Enumerated(EnumType.STRING)
     private Role role;
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "img_id")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Image image;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Ads> ads;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
