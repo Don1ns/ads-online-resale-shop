@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -21,8 +20,6 @@ import java.util.UUID;
 @Transactional
 public class ImageServiceImpl implements ImageService {
     private final ImageRepository imageRepository;
-
-    private final String path = System.getProperty("user.dir") + File.separator + "images";
 
     public ImageServiceImpl(ImageRepository imageRepository) {
         this.imageRepository = imageRepository;
@@ -32,12 +29,9 @@ public class ImageServiceImpl implements ImageService {
     public Image uploadImage(MultipartFile imageFile) {
         Image image = new Image();
         try {
-            String fileId = UUID.randomUUID() + Objects.requireNonNull(imageFile.getContentType()).replace("image/", ".");
+            String fileId = UUID.randomUUID().toString();
             image.setId(fileId);
-
-            Files.createDirectories(Paths.get(path));
-            imageFile.transferTo(new File(path + File.separator + fileId));
-
+            image.setBytes(imageFile.getBytes());
             return image;
         } catch (IOException e) {
             throw new RuntimeException("Проблемы с получением байтов");
@@ -46,15 +40,8 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public byte[] loadImage(String filename) {
-        File file;
-        byte[] bytes;
-        try {
-            file = new File(path, filename);
-            bytes = Files.readAllBytes(file.toPath());
-        } catch (IOException e) {
-            throw new ImageNotFoundException("Image not found");
-        }
-        return bytes;
+        Image image = imageRepository.findById(filename).orElseThrow(ImageNotFoundException::new);
+        return image.getBytes();
     }
 
     @Override
