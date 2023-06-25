@@ -24,8 +24,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/register",
             "/ads",
             "/ads/image/*",
-            "/users/image/*",
-            "/images"
+            "/users/image/*"
     };
 
     public WebSecurityConfig(UserDetailsService userDetailsService) {

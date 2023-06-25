@@ -21,7 +21,6 @@ public class Ads {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "image")
     private Image image;
     private int price;
     private String title;

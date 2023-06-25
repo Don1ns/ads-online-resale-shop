@@ -59,12 +59,17 @@ public class AdsServiceImpl implements AdsService {
 
     @Override
     public AdsDTO updateImage(int id, MultipartFile file) {
+        /*
         Ads ads = repository.findById(id).orElseThrow(AdNotFoundException::new);
         Image image = imageService.uploadImage(file);
         ads.setImage(image);
         repository.save(ads);
         return adsMapper.toAdsDto(ads);
+
+         */
+        return null;
     }
+
 
 
 
@@ -84,11 +89,7 @@ public class AdsServiceImpl implements AdsService {
         ads.setDescription(createAds.getDescription());
         ads.setPrice(createAds.getPrice());
         ads.setTitle(createAds.getTitle());
-
-        Image image = imageService.uploadImage(file);
-
-        ads.setImage(image);
-
+        ads.setImage(imageService.uploadImage(file));
         ads.setUser(userService.getUser(authentication.getName()));
 
         repository.save(ads);

@@ -5,11 +5,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import me.don1ns.adsonlineresaleshop.DTO.*;
-import me.don1ns.adsonlineresaleshop.entity.Ads;
 import me.don1ns.adsonlineresaleshop.service.AdsService;
 import me.don1ns.adsonlineresaleshop.service.CommentService;
 import me.don1ns.adsonlineresaleshop.service.ImageService;
-import me.don1ns.adsonlineresaleshop.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -18,7 +16,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
 
 @RestController
 @RequestMapping("/ads")
@@ -156,7 +153,8 @@ public class AdsController {
     )
     @GetMapping("/me")
     public ResponseEntity<ResponseWrapperAds<AdsDTO>> getAdsMe(Authentication authentication) {
-        return ResponseEntity.ok(adsService.getAllUserAds(authentication.getName()));
+        ResponseWrapperAds<AdsDTO> response = adsService.getAllUserAds(authentication.getName());
+        return ResponseEntity.ok(response);
     }
 
     // Обновить картинку объявления
@@ -265,11 +263,7 @@ public class AdsController {
                     @ApiResponse(responseCode = "200", description = "OK"),
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
             })
-    @GetMapping(value = "/image/{id}", produces = {
-            MediaType.IMAGE_PNG_VALUE,
-            MediaType.IMAGE_JPEG_VALUE,
-            MediaType.APPLICATION_OCTET_STREAM_VALUE
-    })
+    @GetMapping(value = "/image/{id}", produces = {MediaType.IMAGE_PNG_VALUE})
     public ResponseEntity<byte[]> getImage(@PathVariable("id") String id) {
         return ResponseEntity.ok(imageService.loadImage(id));
     }
