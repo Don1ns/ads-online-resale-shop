@@ -1,11 +1,13 @@
 package me.don1ns.adsonlineresaleshop.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import me.don1ns.adsonlineresaleshop.DTO.CommentDTO;
 import me.don1ns.adsonlineresaleshop.DTO.CreateCommentDTO;
 import me.don1ns.adsonlineresaleshop.DTO.ResponseWrapperCommentDTO;
 import me.don1ns.adsonlineresaleshop.entity.Ads;
 import me.don1ns.adsonlineresaleshop.entity.Comment;
 import me.don1ns.adsonlineresaleshop.entity.User;
+import me.don1ns.adsonlineresaleshop.exception.AdNotFoundException;
 import me.don1ns.adsonlineresaleshop.exception.CommentNotFoundException;
 import me.don1ns.adsonlineresaleshop.mapper.CommentMapper;
 import me.don1ns.adsonlineresaleshop.repository.AdsRepository;
@@ -15,15 +17,17 @@ import me.don1ns.adsonlineresaleshop.service.AdsService;
 import me.don1ns.adsonlineresaleshop.service.CommentService;
 import me.don1ns.adsonlineresaleshop.service.UserService;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
 import java.util.List;
 
 import static me.don1ns.adsonlineresaleshop.constant.Constant.COMMENT_NOT_BELONG_AD_MSG;
 import static me.don1ns.adsonlineresaleshop.constant.Constant.COMMENT_NOT_FOUND_MSG;
+@Slf4j
 @Service
+@Transactional
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final AdsRepository adsRepository;
@@ -39,7 +43,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public ResponseWrapperCommentDTO getComments(Integer id) {
-        List<CommentDTO> comments = commentRepository.findByAdsId(id).stream()
+        List<CommentDTO> comments = commentRepository.getCommentsByAds_Id(id).stream()
                 .map(commentMapper::toCommentDto)
                 .toList();
         return new ResponseWrapperCommentDTO(comments.size(), comments);
@@ -47,8 +51,11 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDTO addComment(Integer id, CreateCommentDTO createCommentDTO, Authentication authentication) {
-        Ads ads = adsRepository.findById(id).orElseThrow();
-        User user = userService.checkUserByUsername(authentication.getName());
+        if (createCommentDTO.getText().isBlank()) {
+            throw new IllegalArgumentException("Нет текста комментария");
+        }
+        Ads ads = adsRepository.findById(id).orElseThrow(AdNotFoundException::new);
+        User user = userService.getUser(authentication.getName());
 
         Comment comment = new Comment();
         comment.setUser(user);

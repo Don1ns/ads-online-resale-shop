@@ -5,22 +5,22 @@ import lombok.Data;
  **/
 @Data
 public class FullAdsDTO {
-    private int id;
+    private int pk;
     private String authorFirstName;
     private String authorLastName;
     private String description;
     private String email;
-    private int imageId;
+    private String image;
     private String phone;
     private int price;
     private String title;
 
-    public int getId() {
-        return id;
+    public int getPk() {
+        return pk;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setPk(int pk) {
+        this.pk = pk;
     }
 
     public String getAuthorFirstName() {
@@ -55,12 +55,12 @@ public class FullAdsDTO {
         this.email = email;
     }
 
-    public int getImageId() {
-        return imageId;
+    public String getImage() {
+        return image;
     }
 
-    public void setImageId(int imageId) {
-        this.imageId = imageId;
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getPhone() {

@@ -2,7 +2,6 @@ package me.don1ns.adsonlineresaleshop.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import me.don1ns.adsonlineresaleshop.DTO.*;
-import me.don1ns.adsonlineresaleshop.entity.Image;
 import me.don1ns.adsonlineresaleshop.entity.User;
 import me.don1ns.adsonlineresaleshop.exception.UserNotFoundException;
 import me.don1ns.adsonlineresaleshop.mapper.UserMapper;
@@ -11,12 +10,14 @@ import me.don1ns.adsonlineresaleshop.service.UserService;;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-@Service
 @Slf4j
+@Service
+@Transactional
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
      private final UserMapper userMapper;

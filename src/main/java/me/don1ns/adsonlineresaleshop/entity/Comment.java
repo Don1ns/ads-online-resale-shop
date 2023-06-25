@@ -14,12 +14,10 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @ManyToOne
-    @JoinColumn(name = "user_id")
     private User user;
     @ManyToOne
-    @JoinColumn(name = "ads_id")
     private Ads ads;
-    private long createdAt;
+    private Long createdAt;
     private String text;
 
     public int getId() {
@@ -46,11 +44,11 @@ public class Comment {
         this.ads = ads;
     }
 
-    public long getCreatedAt() {
+    public Long getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(long createdAt) {
+    public void setCreatedAt(Long createdAt) {
         this.createdAt = createdAt;
     }
 

@@ -8,7 +8,9 @@ import java.io.IOException;
 public interface ImageService {
     Image uploadImage(MultipartFile imageFile);
 
-    Image getImageById(int id);
+    byte[] loadImage(String id);
+
+    Image getImageById(String id);
 
     void remove(Image image);
 }

@@ -10,7 +10,7 @@ public class UserDTO {
     private String firstName;
     private String lastName;
     private String phone;
-    private int image;
+    private String image;
 
     public int getId() {
         return id;
@@ -52,11 +52,11 @@ public class UserDTO {
         this.phone = phone;
     }
 
-    public int getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(int image) {
+    public void setImage(String image) {
         this.image = image;
     }
 }

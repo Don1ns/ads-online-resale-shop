@@ -8,29 +8,34 @@ import me.don1ns.adsonlineresaleshop.DTO.*;
 import me.don1ns.adsonlineresaleshop.entity.Ads;
 import me.don1ns.adsonlineresaleshop.service.AdsService;
 import me.don1ns.adsonlineresaleshop.service.CommentService;
+import me.don1ns.adsonlineresaleshop.service.ImageService;
 import me.don1ns.adsonlineresaleshop.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+
 @RestController
 @RequestMapping("/ads")
 @CrossOrigin(value = "http://localhost:3000")
 public class AdsController {
-    private AdsService adsService;
-    private CommentService commentService;
-    private UserService userService;
+    private final AdsService adsService;
+    private final CommentService commentService;
+    private final ImageService imageService;
 
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
-    public AdsController(AdsService adsService, CommentService commentService, UserService userService) {
+    public AdsController(AdsService adsService, CommentService commentService, ImageService imageService) {
         this.adsService = adsService;
         this.commentService = commentService;
-        this.userService = userService;
+        this.imageService = imageService;
     }
+
     // Получить все объявления
     @Operation(
             summary = "Получить все объявления",
@@ -47,7 +52,7 @@ public class AdsController {
             }
     )
     @GetMapping()
-    public ResponseEntity<ResponseWrapperAds> getAllAds() {
+    public ResponseEntity<ResponseWrapperAds<AdsDTO>> getAllAds() {
         return ResponseEntity.ok(adsService.getAllAds());
     }
 
@@ -67,10 +72,11 @@ public class AdsController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized")
             }
     )
-    @PostMapping()
-    public ResponseEntity<AdsDTO> addAds(@RequestBody CreateAdsDTO createAds, @RequestParam("file") MultipartFile file, Authentication authentication) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<AdsDTO> addAds(@RequestPart("image") MultipartFile image,
+                                         @RequestPart("properties") CreateAds properties, Authentication authentication) {
         printLogInfo("/ads/", "post", "/ads/");
-        AdsDTO adsDTO = adsService.adAd(createAds, file, authentication);
+        AdsDTO adsDTO = adsService.adAd(properties, image, authentication);
         return ResponseEntity.ok(adsDTO);
     }
 
@@ -91,8 +97,9 @@ public class AdsController {
             }
     )
     @GetMapping("/{id}")
-    public ResponseEntity<FullAdsDTO> getAds(@PathVariable int id) {
-        return ResponseEntity.ok(adsService.getAdInfo(id));
+    public ResponseEntity<FullAdsDTO> getAds(@PathVariable("id") int id) {
+        FullAdsDTO fullAdsDTO = adsService.getAdInfo(id);
+        return ResponseEntity.ok(fullAdsDTO);
     }
 
     // Удалить объявление
@@ -118,7 +125,7 @@ public class AdsController {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            schema = @Schema(implementation = CreateAdsDTO.class)
+                                            schema = @Schema(implementation = CreateAds.class)
                                     )
                             }
                     ),
@@ -127,7 +134,7 @@ public class AdsController {
             }
     )
     @PatchMapping("/{id}")
-    public ResponseEntity<AdsDTO> updateAds(@PathVariable int id, @RequestBody CreateAdsDTO createAds) {
+    public ResponseEntity<AdsDTO> updateAds(@PathVariable int id, @RequestBody CreateAds createAds) {
         return ResponseEntity.ok(adsService.update(id, createAds));
     }
 
@@ -148,7 +155,7 @@ public class AdsController {
             }
     )
     @GetMapping("/me")
-    public ResponseEntity<ResponseWrapperAds<Ads>> getAdsMe(Authentication authentication) {
+    public ResponseEntity<ResponseWrapperAds<AdsDTO>> getAdsMe(Authentication authentication) {
         return ResponseEntity.ok(adsService.getAllUserAds(authentication.getName()));
     }
 
@@ -185,14 +192,14 @@ public class AdsController {
                                     )
                             }
                     ),
-
                     @ApiResponse(
                             responseCode = "401", description = "Unauthorized")
             }
     )
     @GetMapping("{id}/comments")
-    public ResponseEntity<ResponseWrapperCommentDTO> getComments(@PathVariable int id) {
-        return ResponseEntity.ok(commentService.getComments(id));
+    public ResponseEntity<ResponseWrapperCommentDTO> getComments(@PathVariable("id") int id) {
+        ResponseWrapperCommentDTO responseWrapperCommentDTO = commentService.getComments(id);
+        return ResponseEntity.ok(responseWrapperCommentDTO);
     }
 
     // Добавить комментарий к объявлению
@@ -211,8 +218,8 @@ public class AdsController {
             }
     )
     @PostMapping("{id}/comments")
-    public ResponseEntity<CommentDTO> addComment(@PathVariable int id, @RequestBody CreateCommentDTO createCommentDTO, Authentication authentication) {
-        return ResponseEntity.ok(commentService.addComment(id, createCommentDTO, authentication));
+    public ResponseEntity<CommentDTO> addComment(@PathVariable("id") int id, @RequestBody CreateCommentDTO createComment, Authentication authentication) {
+        return ResponseEntity.ok(commentService.addComment(id, createComment, authentication));
     }
 
     // Удалить комментарий
@@ -247,9 +254,24 @@ public class AdsController {
             }
     )
     @PatchMapping("{adId}/comments/{commentId}")
-    public ResponseEntity<CommentDTO> updateComment(@PathVariable int adId, @PathVariable int commentId,
+    public ResponseEntity<CommentDTO> updateComment(@PathVariable("adId") int adId, @PathVariable("commentId") int commentId,
                                                     @RequestBody CommentDTO comment, Authentication authentication) {
         return ResponseEntity.ok(commentService.updateComment(adId, commentId, comment, authentication));
+    }
+
+    @Operation(summary = "Получить картинку объявления",
+            tags = "Объявления",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK"),
+                    @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
+            })
+    @GetMapping(value = "/image/{id}", produces = {
+            MediaType.IMAGE_PNG_VALUE,
+            MediaType.IMAGE_JPEG_VALUE,
+            MediaType.APPLICATION_OCTET_STREAM_VALUE
+    })
+    public ResponseEntity<byte[]> getImage(@PathVariable("id") String id) {
+        return ResponseEntity.ok(imageService.loadImage(id));
     }
 
     private void printLogInfo(String name, String requestMethod, String path) {

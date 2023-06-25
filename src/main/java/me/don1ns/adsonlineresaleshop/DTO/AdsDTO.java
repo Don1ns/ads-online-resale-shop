@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class AdsDTO {
     private int authorId;
-    private int imageId;
+    private String image;
     private int pk;
     private int price;
     private String title;
@@ -20,12 +20,12 @@ public class AdsDTO {
         this.authorId = authorId;
     }
 
-    public int getImageId() {
-        return imageId;
+    public String getImage() {
+        return image;
     }
 
-    public void setImageId(int imageId) {
-        this.imageId = imageId;
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public int getPk() {

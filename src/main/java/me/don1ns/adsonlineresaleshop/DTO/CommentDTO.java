@@ -8,7 +8,7 @@ public class CommentDTO {
     private int author;
     private String authorImage;
     private String authorFirstName;
-    private long createdAt;
+    private Long createdAt;
     private int pk;
     private String text;
 
@@ -36,11 +36,11 @@ public class CommentDTO {
         this.authorFirstName = authorFirstName;
     }
 
-    public long getCreatedAt() {
+    public Long getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(long createdAt) {
+    public void setCreatedAt(Long createdAt) {
         this.createdAt = createdAt;
     }
 

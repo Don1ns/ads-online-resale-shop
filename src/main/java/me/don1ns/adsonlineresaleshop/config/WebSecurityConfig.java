@@ -22,7 +22,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/webjars/**",
             "/login",
             "/register",
-            "/ads"
+            "/ads",
+            "/ads/image/*",
+            "/users/image/*",
+            "/images"
     };
 
     public WebSecurityConfig(UserDetailsService userDetailsService) {
