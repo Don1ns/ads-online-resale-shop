@@ -1,7 +1,9 @@
 package me.don1ns.adsonlineresaleshop.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 /**
   * @author Loginova Viktoria (Логинова Виктория)
@@ -18,15 +20,19 @@ public class Ads {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "img_id")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Image image;
     private int price;
     private String title;
     private String description;
+    private LocalDateTime dateTime;
     @ManyToOne
-    @JoinColumn(name = "user_id")
     private User user;
+
+    @PrePersist
+    private void init() {
+        dateTime = LocalDateTime.now();
+    }
 
     public int getId() {
         return id;
@@ -74,5 +80,13 @@ public class Ads {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 }

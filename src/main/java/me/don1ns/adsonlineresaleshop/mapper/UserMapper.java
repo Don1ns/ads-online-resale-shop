@@ -5,7 +5,6 @@ import me.don1ns.adsonlineresaleshop.DTO.UserDTO;
 import me.don1ns.adsonlineresaleshop.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 /**
  * @author Алексей Серебряков
@@ -13,9 +12,9 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    @Mapping(source = "image", target = "image.path")
+    @Mapping(source = "image", target = "image.id")
     User toUser(UserDTO userDTO);
-    @Mapping(source = "image.path", target = "image")
+    @Mapping(source = "image.id", target = "image")
     UserDTO toDto(User user);
 
     //Маперы для регистрации

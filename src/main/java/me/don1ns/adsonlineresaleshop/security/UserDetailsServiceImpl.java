@@ -1,34 +1,22 @@
 package me.don1ns.adsonlineresaleshop.security;
 
-import me.don1ns.adsonlineresaleshop.entity.User;
 import me.don1ns.adsonlineresaleshop.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    @Autowired
     public UserDetailsServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = getUserByUsername(username);
-        return new MyUserDetails(user);
-    }
-
-    private User getUserByUsername(String username) {
-        return userRepository.findByEmailIgnoreCase(username).orElseThrow(() ->
-                new UsernameNotFoundException(String.format("Пользователь с email: \"%s\" не найден", username)));
+        return userRepository.findByEmail(username);
     }
 }

@@ -1,10 +1,12 @@
 package me.don1ns.adsonlineresaleshop.service.impl;
 
-import jakarta.validation.ValidationException;
+import javax.xml.bind.ValidationException;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import me.don1ns.adsonlineresaleshop.DTO.RegisterReqDTO;
 import me.don1ns.adsonlineresaleshop.entity.User;
 import me.don1ns.adsonlineresaleshop.mapper.UserMapper;
@@ -18,10 +20,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 
+@Slf4j
 @Service
+@Transactional
 public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final UserDetailsServiceImpl userDetailsServiceImpl;
@@ -56,10 +61,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public boolean register(RegisterReqDTO registerReqDTO) {
         User user = userMapper.toEntity(registerReqDTO);
         if (userRepository.existsByEmailIgnoreCase(user.getEmail())) {
-            throw new ValidationException(String.format("User \"%s\" is already registered!", user.getEmail()));
+            throw new RuntimeException("user already exist");
         }
         user.setPassword(encoder.encode(user.getPassword()));
-        user.setRegDate(Instant.now());
         userRepository.save(user);
         return true;
     }
