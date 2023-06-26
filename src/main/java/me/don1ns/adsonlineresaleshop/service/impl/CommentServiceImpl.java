@@ -9,6 +9,7 @@ import me.don1ns.adsonlineresaleshop.entity.Comment;
 import me.don1ns.adsonlineresaleshop.entity.User;
 import me.don1ns.adsonlineresaleshop.exception.AdNotFoundException;
 import me.don1ns.adsonlineresaleshop.exception.CommentNotFoundException;
+import me.don1ns.adsonlineresaleshop.exception.NoAccessException;
 import me.don1ns.adsonlineresaleshop.mapper.CommentMapper;
 import me.don1ns.adsonlineresaleshop.repository.AdsRepository;
 import me.don1ns.adsonlineresaleshop.repository.CommentRepository;
@@ -70,20 +71,19 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDTO updateComment(Integer adId, Integer commentId, CommentDTO commentDTO, Authentication authentication) {
-        SecurityUtils.checkPermissionToAdsComment(commentMapper.toAdsComment(commentDTO),
-                userService.checkUserByUsername(authentication.getName()));
-        if (commentRepository.findById(commentId).isPresent()) {
-            if (commentRepository.findById(commentId).get().getId() != adId) {
-                throw new NotFoundException(COMMENT_NOT_BELONG_AD_MSG);
-            }
-        } else {
-            throw new CommentNotFoundException(COMMENT_NOT_FOUND_MSG);
+        if (checkCommentAccess(commentId, authentication)) {
+            Comment comment = commentRepository.getById(commentId);
+            comment.setCreatedAt(System.currentTimeMillis());
+            comment.setText(commentDTO.getText());
+            commentRepository.save(comment);
+            return commentMapper.toCommentDto(comment);
         }
-        Comment comment = commentRepository.findById(commentId).orElseThrow();
-        comment.setCreatedAt(System.currentTimeMillis());
-        comment.setText(commentDTO.getText());
-        commentRepository.save(comment);
-        return commentMapper.toCommentDto(comment);
+        throw new NoAccessException("Нет доступа к комментарию");
+    }
+
+    private boolean checkCommentAccess(int commentId, Authentication authentication) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
+        return comment.getUser().getEmail().equals(authentication.getName());
     }
 
 
