@@ -15,8 +15,6 @@ public class Comment {
     private int id;
     @ManyToOne
     private User user;
-
-    private String userAvatar;
     @ManyToOne()
     private Ads ads;
     private Long createdAt;
@@ -62,11 +60,4 @@ public class Comment {
         this.text = text;
     }
 
-    public String getUserAvatar() {
-        return userAvatar;
-    }
-
-    public void setUserAvatar(String userAvatar) {
-        this.userAvatar = userAvatar;
-    }
 }

@@ -7,7 +7,6 @@ import me.don1ns.adsonlineresaleshop.service.ImageService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.webjars.NotFoundException;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -44,7 +43,7 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public Image getImageById(String id) {
         return imageRepository.findById(id).orElseThrow(
-                () -> new NotFoundException("Image with id " + id + " not found!"));
+                () -> new ImageNotFoundException("Image with id " + id + " not found!"));
     }
 
     @Override

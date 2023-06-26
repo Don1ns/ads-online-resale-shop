@@ -13,13 +13,11 @@ import me.don1ns.adsonlineresaleshop.exception.NoAccessException;
 import me.don1ns.adsonlineresaleshop.mapper.CommentMapper;
 import me.don1ns.adsonlineresaleshop.repository.AdsRepository;
 import me.don1ns.adsonlineresaleshop.repository.CommentRepository;
-import me.don1ns.adsonlineresaleshop.service.AdsService;
 import me.don1ns.adsonlineresaleshop.service.CommentService;
 import me.don1ns.adsonlineresaleshop.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.webjars.NotFoundException;
 
 import java.util.List;
 
@@ -34,7 +32,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentMapper commentMapper;
     private final UserService userService;
 
-    public CommentServiceImpl(CommentRepository commentRepository, AdsRepository adsRepository, AdsService adsService, CommentMapper commentMapper, UserService userService) {
+    public CommentServiceImpl(CommentRepository commentRepository, AdsRepository adsRepository, CommentMapper commentMapper, UserService userService) {
         this.commentRepository = commentRepository;
         this.adsRepository = adsRepository;
         this.commentMapper = commentMapper;
@@ -89,7 +87,7 @@ public class CommentServiceImpl implements CommentService {
     public boolean deleteComment(Integer adId, Integer commentId, Authentication authentication) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CommentNotFoundException(COMMENT_NOT_FOUND_MSG.formatted(commentId)));
         if (comment.getAds().getId() != adId) {
-            throw new NotFoundException(COMMENT_NOT_BELONG_AD_MSG);
+            throw new CommentNotFoundException(COMMENT_NOT_BELONG_AD_MSG);
         }
         if (checkCommentAccess(commentId, authentication)) {
             commentRepository.delete(comment);
