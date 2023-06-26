@@ -19,5 +19,7 @@ public interface CommentService {
 
     boolean deleteComment(Integer adId,Integer commentId, Authentication authentication);
 
+    void deleteAllByAdsId(int id);
+
 
 }

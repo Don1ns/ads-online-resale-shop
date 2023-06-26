@@ -2,10 +2,13 @@ package me.don1ns.adsonlineresaleshop.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import me.don1ns.adsonlineresaleshop.DTO.*;
+import me.don1ns.adsonlineresaleshop.entity.Image;
 import me.don1ns.adsonlineresaleshop.entity.User;
 import me.don1ns.adsonlineresaleshop.exception.UserNotFoundException;
 import me.don1ns.adsonlineresaleshop.mapper.UserMapper;
+import me.don1ns.adsonlineresaleshop.repository.ImageRepository;
 import me.don1ns.adsonlineresaleshop.repository.UserRepository;
+import me.don1ns.adsonlineresaleshop.service.ImageService;
 import me.don1ns.adsonlineresaleshop.service.UserService;;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
 @Slf4j
 @Service
 @Transactional
@@ -22,11 +23,13 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
      private final UserMapper userMapper;
     private final PasswordEncoder encoder;
+    private final ImageService imageService;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, PasswordEncoder encoder) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, PasswordEncoder encoder, ImageService imageService) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.encoder = encoder;
+        this.imageService = imageService;
     }
 
     @Override
@@ -60,7 +63,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getUser(Authentication authentication) {
-        User user = getUser(authentication.getName());
+        User user = userRepository.findByEmail(authentication.getName());
         return userMapper.toDto(user);
     }
 
@@ -84,19 +87,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUserImage(MultipartFile image, User currentUser) throws IOException {
-        User user = userRepository.findByEmail(currentUser.getUsername());
-        // Save the image to the server
-        String fileName = image.getOriginalFilename();
-        String fileExtension = fileName.substring(fileName.lastIndexOf("."));
-        String filePath = "path/to/image/directory/" + user.getId() + fileExtension; // Update the file path as per your server setup
-        File file = new File(filePath);
-        image.transferTo(file);
-
-        // Update the user's image URL
-
-        userRepository.save(user);
-
-        return user;
+    public UserDTO updateUserImage(MultipartFile file, Authentication authentication) {
+        User user = userRepository.findByEmail(authentication.getName());
+        if (user == null) {
+            throw new UserNotFoundException("User not found");
+        }
+        Image userImage = user.getImage();
+        if (userImage != null) {
+            imageService.remove(userImage);
+        }
+        user.setImage(imageService.uploadImage(file));
+        return userMapper.toDto(userRepository.save(user));
     }
 }

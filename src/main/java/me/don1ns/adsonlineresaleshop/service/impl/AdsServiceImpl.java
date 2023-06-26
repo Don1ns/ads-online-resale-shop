@@ -1,16 +1,17 @@
 package me.don1ns.adsonlineresaleshop.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import me.don1ns.adsonlineresaleshop.DTO.AdsDTO;
-import me.don1ns.adsonlineresaleshop.DTO.CreateAds;
-import me.don1ns.adsonlineresaleshop.DTO.FullAdsDTO;
-import me.don1ns.adsonlineresaleshop.DTO.ResponseWrapperAds;
+import me.don1ns.adsonlineresaleshop.DTO.*;
 import me.don1ns.adsonlineresaleshop.entity.Ads;
 import me.don1ns.adsonlineresaleshop.entity.Image;
+import me.don1ns.adsonlineresaleshop.entity.User;
 import me.don1ns.adsonlineresaleshop.exception.AdNotFoundException;
+import me.don1ns.adsonlineresaleshop.exception.NoAccessException;
 import me.don1ns.adsonlineresaleshop.mapper.AdsMapper;
 import me.don1ns.adsonlineresaleshop.repository.AdsRepository;
+import me.don1ns.adsonlineresaleshop.repository.CommentRepository;
 import me.don1ns.adsonlineresaleshop.service.AdsService;
+import me.don1ns.adsonlineresaleshop.service.CommentService;
 import me.don1ns.adsonlineresaleshop.service.ImageService;
 import me.don1ns.adsonlineresaleshop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +31,44 @@ public class AdsServiceImpl implements AdsService {
     private final AdsMapper adsMapper;
     private final ImageService imageService;
     private final UserService userService;
+    private final CommentRepository commentRepository;
 
-    @Autowired
-    public AdsServiceImpl(AdsRepository repository, AdsMapper adsMapper, ImageService imageService, UserService userService) {
+    public AdsServiceImpl(AdsRepository repository, AdsMapper adsMapper, ImageService imageService, UserService userService, CommentRepository commentRepository) {
         this.repository = repository;
         this.adsMapper = adsMapper;
         this.imageService = imageService;
         this.userService = userService;
+        this.commentRepository = commentRepository;
     }
+
+    @Override
+    public AdsDTO update(int id, CreateAds createAds, Authentication authentication) {
+        if (adAccessCheck(id, authentication)) {
+            Ads ads = repository.findById(id).orElseThrow(AdNotFoundException::new);
+            ads.setDescription(createAds.getDescription());
+            ads.setPrice(createAds.getPrice());
+            ads.setTitle(createAds.getTitle());
+            repository.save(ads);
+            return adsMapper.toAdsDto(ads);
+        }
+        throw new NoAccessException("no access to ad");
+    }
+
+
+    @Override
+    public AdsDTO updateImage(int id, MultipartFile file, Authentication authentication) {
+        if (adAccessCheck(id, authentication)) {
+            Ads ads = repository.findById(id).orElseThrow(AdNotFoundException::new);
+            Image image = ads.getImage();
+            if (image != null) {
+                imageService.remove(image);
+            }
+            ads.setImage(imageService.uploadImage(file));
+            return adsMapper.toAdsDto(repository.save(ads));
+        }
+        throw new NoAccessException("No access to ad");
+    }
+
 
     @Override
     public void save(Ads ads) {
@@ -45,37 +76,13 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public AdsDTO update(int id, CreateAds createAds) {
-        Ads ads = repository.findById(id).orElseThrow(AdNotFoundException::new);
-        ads.setDescription(createAds.getDescription());
-        ads.setPrice(createAds.getPrice());
-        ads.setTitle(createAds.getTitle());
-        repository.save(ads);
-        return adsMapper.toAdsDto(ads);
-    }
-
-
-
-
-    @Override
-    public AdsDTO updateImage(int id, MultipartFile file) {
-        /*
-        Ads ads = repository.findById(id).orElseThrow(AdNotFoundException::new);
-        Image image = imageService.uploadImage(file);
-        ads.setImage(image);
-        repository.save(ads);
-        return adsMapper.toAdsDto(ads);
-
-         */
-        return null;
-    }
-
-
-
-
-    @Override
-    public void deleteById(int id) {
-        repository.deleteById(id);
+    public boolean deleteById(int id, Authentication authentication) {
+        if (adAccessCheck(id, authentication)) {
+            commentRepository.deleteAllByAds_Id(id);
+            repository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -117,5 +124,14 @@ public class AdsServiceImpl implements AdsService {
     @Override
     public FullAdsDTO getAdInfo(int id) {
         return adsMapper.toFullAdsDto(repository.findById(id).orElseThrow(AdNotFoundException::new));
+    }
+
+    private boolean adAccessCheck(int id, Authentication authentication) {
+        User user = userService.getUser(authentication.getName());
+        if (user.getAuthorities().contains(Role.ADMIN)) {
+            return true;
+        }
+        Ads ads = repository.getById(id);
+        return ads.getUser().getId() == user.getId();
     }
 }

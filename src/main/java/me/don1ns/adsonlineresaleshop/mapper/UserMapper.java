@@ -14,7 +14,7 @@ import org.mapstruct.Named;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    @Mapping(source = "image", target = "image", qualifiedByName = "imageMapper")
+    @Mapping(target = "image", source = "image", qualifiedByName = "imageMapper")
     UserDTO toDto(User user);
 
     //Маперы для регистрации
