@@ -6,7 +6,6 @@ import me.don1ns.adsonlineresaleshop.entity.Image;
 import me.don1ns.adsonlineresaleshop.entity.User;
 import me.don1ns.adsonlineresaleshop.exception.UserNotFoundException;
 import me.don1ns.adsonlineresaleshop.mapper.UserMapper;
-import me.don1ns.adsonlineresaleshop.repository.ImageRepository;
 import me.don1ns.adsonlineresaleshop.repository.UserRepository;
 import me.don1ns.adsonlineresaleshop.service.ImageService;
 import me.don1ns.adsonlineresaleshop.service.UserService;;

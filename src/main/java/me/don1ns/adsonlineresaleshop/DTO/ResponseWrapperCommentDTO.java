@@ -2,7 +2,6 @@ package me.don1ns.adsonlineresaleshop.DTO;
 import lombok.Data;
 
 import java.util.List;
-
 @Data
 public class ResponseWrapperCommentDTO {
     private int count;

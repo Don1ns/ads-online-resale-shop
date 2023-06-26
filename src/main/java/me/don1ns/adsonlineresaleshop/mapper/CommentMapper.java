@@ -6,7 +6,6 @@ import me.don1ns.adsonlineresaleshop.entity.Image;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import org.mapstruct.factory.Mappers;
 
 /**
  * @author Алексей Серебряков

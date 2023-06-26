@@ -234,8 +234,10 @@ public class AdsController {
     )
     @DeleteMapping("{adId}/comments/{commentId}")
     public ResponseEntity<CommentDTO> deleteComment(@PathVariable int adId, @PathVariable int commentId, Authentication authentication) {
-        commentService.deleteComment(adId, commentId, authentication);
-        return ResponseEntity.ok().build();
+        if (commentService.deleteComment(adId, commentId, authentication)) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     // Обновить комментарий
@@ -275,5 +277,4 @@ public class AdsController {
         logger.info("Вызван метод " + name + ", адрес "
                 + requestMethod.toUpperCase() + " запроса " + path);
     }
-
 }

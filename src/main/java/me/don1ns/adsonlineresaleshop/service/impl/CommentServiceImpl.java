@@ -13,7 +13,6 @@ import me.don1ns.adsonlineresaleshop.exception.NoAccessException;
 import me.don1ns.adsonlineresaleshop.mapper.CommentMapper;
 import me.don1ns.adsonlineresaleshop.repository.AdsRepository;
 import me.don1ns.adsonlineresaleshop.repository.CommentRepository;
-import me.don1ns.adsonlineresaleshop.security.SecurityUtils;
 import me.don1ns.adsonlineresaleshop.service.AdsService;
 import me.don1ns.adsonlineresaleshop.service.CommentService;
 import me.don1ns.adsonlineresaleshop.service.UserService;
@@ -86,22 +85,21 @@ public class CommentServiceImpl implements CommentService {
         return comment.getUser().getEmail().equals(authentication.getName());
     }
 
-
     @Override
     public boolean deleteComment(Integer adId, Integer commentId, Authentication authentication) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CommentNotFoundException(COMMENT_NOT_FOUND_MSG.formatted(commentId)));
         if (comment.getAds().getId() != adId) {
             throw new NotFoundException(COMMENT_NOT_BELONG_AD_MSG);
         }
-        SecurityUtils.checkPermissionToAdsComment(comment, userService.checkUserByUsername(authentication.getName()));
-        commentRepository.delete(comment);
-        return true;
+        if (checkCommentAccess(commentId, authentication)) {
+            commentRepository.delete(comment);
+            return true;
+        }
+        return false;
     }
 
     @Override
     public void deleteAllByAdsId(int id) {
         commentRepository.deleteAllByAds_Id(id);
     }
-
-
 }

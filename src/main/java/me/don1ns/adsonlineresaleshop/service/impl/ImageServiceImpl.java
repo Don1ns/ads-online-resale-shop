@@ -9,10 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.UUID;
 
 @Slf4j
@@ -54,5 +51,4 @@ public class ImageServiceImpl implements ImageService {
     public void remove(Image image) {
         imageRepository.delete(image);
     }
-
 }

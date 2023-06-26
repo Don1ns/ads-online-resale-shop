@@ -1,8 +1,6 @@
 package me.don1ns.adsonlineresaleshop.DTO;
 import lombok.Data;
 
-import javax.persistence.Table;
-
 /**
  * @author Артем Королёв
  **/
