@@ -15,7 +15,7 @@ public class Comment {
     private int id;
     @ManyToOne
     private User user;
-    @ManyToOne
+    @ManyToOne()
     private Ads ads;
     private Long createdAt;
     private String text;

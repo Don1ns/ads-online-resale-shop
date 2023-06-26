@@ -9,5 +9,7 @@ import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
     List<Comment> getCommentsByAds_Id(int id);
+
+    void deleteAllByAds_Id(int id);
 }
 

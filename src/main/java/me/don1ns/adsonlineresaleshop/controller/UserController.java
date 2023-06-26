@@ -1,14 +1,19 @@
 package me.don1ns.adsonlineresaleshop.controller;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import me.don1ns.adsonlineresaleshop.DTO.NewPasswordDTO;
 import me.don1ns.adsonlineresaleshop.DTO.UserDTO;
-import me.don1ns.adsonlineresaleshop.entity.User;
+import me.don1ns.adsonlineresaleshop.service.ImageService;
 import me.don1ns.adsonlineresaleshop.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/users")
@@ -17,10 +22,12 @@ public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
     private final UserService userService;
+    private final ImageService imageService;
 
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, ImageService imageService) {
         this.userService = userService;
+        this.imageService = imageService;
     }
 
     // Обновление пароля
@@ -58,23 +65,26 @@ public class UserController {
         }
     }
 
-    /*
     // Обновить аватар авторизованного пользователя
-    @PatchMapping("/me/image")
-    public ResponseEntity<UserDTO> updateUserImage(@RequestPart(name = "image") MultipartFile image, Authentication authentication) {
-        UserDTO userDTO = userService.updateUserImage(authentication.getName(), image);
-        if (userDTO != null) {
-            return ResponseEntity.ok().build();
-        }
-        else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+    @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateUserImage(@RequestPart("image") MultipartFile image, Authentication authentication) {
+        userService.updateUserImage(image, authentication);
+        return ResponseEntity.ok().build();
     }
-
-     */
 
     private void printLogInfo(String name, String requestMethod, String path) {
         logger.info("Вызван метод " + name + ", адрес "
                 + requestMethod.toUpperCase() + " запроса " + path);
+    }
+
+    @Operation(summary = "Получить картинку объявления",
+            tags = "Объявления",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK"),
+                    @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
+            })
+    @GetMapping(value = "/image/{id}", produces = {MediaType.IMAGE_PNG_VALUE})
+    public ResponseEntity<byte[]> getImage(@PathVariable("id") String id) {
+        return ResponseEntity.ok(imageService.loadImage(id));
     }
 }

@@ -97,4 +97,11 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.delete(comment);
         return true;
     }
+
+    @Override
+    public void deleteAllByAdsId(int id) {
+        commentRepository.deleteAllByAds_Id(id);
+    }
+
+
 }

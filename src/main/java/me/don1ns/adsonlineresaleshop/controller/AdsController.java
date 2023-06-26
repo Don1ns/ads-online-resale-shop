@@ -10,6 +10,7 @@ import me.don1ns.adsonlineresaleshop.service.CommentService;
 import me.don1ns.adsonlineresaleshop.service.ImageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -109,9 +110,11 @@ public class AdsController {
             }
     )
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> removeAd(@PathVariable int id) {
-        adsService.deleteById(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> removeAd(@PathVariable int id, Authentication authentication) {
+        if (adsService.deleteById(id, authentication)) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     // Обновить информацию об объявлении
@@ -131,8 +134,8 @@ public class AdsController {
             }
     )
     @PatchMapping("/{id}")
-    public ResponseEntity<AdsDTO> updateAds(@PathVariable int id, @RequestBody CreateAds createAds) {
-        return ResponseEntity.ok(adsService.update(id, createAds));
+    public ResponseEntity<AdsDTO> updateAds(@PathVariable int id, @RequestBody CreateAds createAds, Authentication authentication) {
+        return ResponseEntity.ok(adsService.update(id, createAds, authentication));
     }
 
     // Получить объявления авторизованного пользователя
@@ -173,8 +176,8 @@ public class AdsController {
             }
     )
     @PatchMapping("/{id}/image")
-    public ResponseEntity<AdsDTO> updateImage(@PathVariable int id, @RequestParam MultipartFile image) {
-        return ResponseEntity.ok(adsService.updateImage(id, image));
+    public ResponseEntity<AdsDTO> updateImage(@PathVariable int id, @RequestParam MultipartFile image, Authentication authentication) {
+        return ResponseEntity.ok(adsService.updateImage(id, image, authentication));
     }
 
     // Получить комментарии объявления
