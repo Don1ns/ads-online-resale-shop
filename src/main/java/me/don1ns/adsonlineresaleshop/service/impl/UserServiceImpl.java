@@ -41,11 +41,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean setPassword(NewPasswordDTO newPasswordDto, String userName) {
         User user = checkUserByUsername(userName);
-        if (user != null) {
-            String password = newPasswordDto.getNewPassword();
-            user.setPassword(encoder.encode(password));
-            userRepository.save(user);
-            return true;
+        if (user != null && user.getPassword().equals(encoder.encode(newPasswordDto.getCurrentPassword()))) {
+                String password = newPasswordDto.getNewPassword();
+                user.setPassword(encoder.encode(password));
+                userRepository.save(user);
+                return true;
         }
         return false;
     }

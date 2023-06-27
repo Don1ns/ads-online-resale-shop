@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.don1ns.adsonlineresaleshop.DTO.CommentDTO;
 import me.don1ns.adsonlineresaleshop.DTO.CreateCommentDTO;
 import me.don1ns.adsonlineresaleshop.DTO.ResponseWrapperCommentDTO;
+import me.don1ns.adsonlineresaleshop.DTO.Role;
 import me.don1ns.adsonlineresaleshop.entity.Ads;
 import me.don1ns.adsonlineresaleshop.entity.Comment;
 import me.don1ns.adsonlineresaleshop.entity.User;
@@ -80,6 +81,9 @@ public class CommentServiceImpl implements CommentService {
 
     private boolean checkCommentAccess(int commentId, Authentication authentication) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
+        if (userService.getUser(authentication.getName()).getAuthorities().contains(Role.ADMIN)) {
+            return true;
+        }
         return comment.getUser().getEmail().equals(authentication.getName());
     }
 
