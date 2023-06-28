@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean setPassword(NewPasswordDTO newPasswordDto, String userName) {
         User user = checkUserByUsername(userName);
-        if (user != null && user.getPassword().equals(encoder.encode(newPasswordDto.getCurrentPassword()))) {
+        if (user != null && encoder.matches(newPasswordDto.getCurrentPassword(), user.getPassword())) {
                 String password = newPasswordDto.getNewPassword();
                 user.setPassword(encoder.encode(password));
                 userRepository.save(user);
