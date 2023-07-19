@@ -1,23 +1,43 @@
 package me.don1ns.adsonlineresaleshop.DTO;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.util.Collection;
-
+import java.util.List;
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class ResponseWrapperCommentDTO<T> {
+public class ResponseWrapperCommentDTO {
     private int count;
-    private Collection<T> results;
-    public static <T> ResponseWrapperCommentDTO<T> of(Collection<T> results) {
-        ResponseWrapperCommentDTO<T> responseWrapperCommentDTO = new ResponseWrapperCommentDTO<>();
+    private List<CommentDTO> results;
+
+    public ResponseWrapperCommentDTO(int count, List<CommentDTO> results) {
+        this.count = count;
+        this.results = results;
+    }
+
+    public ResponseWrapperCommentDTO() {
+    }
+
+    public static ResponseWrapperCommentDTO of(List<CommentDTO> results) {
+        ResponseWrapperCommentDTO responseWrapperCommentDTO = new ResponseWrapperCommentDTO();
         if (results == null) {
             return responseWrapperCommentDTO;
         }
         responseWrapperCommentDTO.results = results;
         responseWrapperCommentDTO.count = results.size();
         return responseWrapperCommentDTO;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public List<CommentDTO> getResults() {
+        return results;
+    }
+
+    public void setResults(List<CommentDTO> results) {
+        this.results = results;
     }
 }

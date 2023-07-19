@@ -5,7 +5,7 @@ import lombok.Data;
  **/
 @Data
 public class FullAdsDTO {
-    private int id;
+    private int pk;
     private String authorFirstName;
     private String authorLastName;
     private String description;
@@ -15,12 +15,12 @@ public class FullAdsDTO {
     private int price;
     private String title;
 
-    public int getId() {
-        return id;
+    public int getPk() {
+        return pk;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setPk(int pk) {
+        this.pk = pk;
     }
 
     public String getAuthorFirstName() {

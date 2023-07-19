@@ -5,12 +5,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import me.don1ns.adsonlineresaleshop.DTO.*;
-import me.don1ns.adsonlineresaleshop.entity.Image;
-import me.don1ns.adsonlineresaleshop.entity.User;
 import me.don1ns.adsonlineresaleshop.service.AdsService;
 import me.don1ns.adsonlineresaleshop.service.CommentService;
 import me.don1ns.adsonlineresaleshop.service.ImageService;
-import me.don1ns.adsonlineresaleshop.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,16 +17,22 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 
 @RestController
 @RequestMapping("/ads")
 @CrossOrigin(value = "http://localhost:3000")
 public class AdsController {
-    private AdsService adsService;
-    private ImageService imageService;
-    private CommentService commentService;
-    private UserService userService;
+    private final AdsService adsService;
+    private final CommentService commentService;
+    private final ImageService imageService;
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+
+    public AdsController(AdsService adsService, CommentService commentService, ImageService imageService) {
+        this.adsService = adsService;
+        this.commentService = commentService;
+        this.imageService = imageService;
+    }
 
     // Получить все объявления
     @Operation(
@@ -44,8 +49,8 @@ public class AdsController {
                     )
             }
     )
-    @GetMapping("/")
-    public ResponseEntity<ResponseWrapperAds> getAllAds() {
+    @GetMapping()
+    public ResponseEntity<ResponseWrapperAds<AdsDTO>> getAllAds() {
         return ResponseEntity.ok(adsService.getAllAds());
     }
 
@@ -65,18 +70,12 @@ public class AdsController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized")
             }
     )
-    @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<AdsDTO> addAds(@RequestParam("properties") CreateAdsDTO createAds, @RequestParam("image") MultipartFile image, Authentication authentication) {
-        User user = userService.checkUserByUsername(authentication.getName());
-        if (user != null) {
-            try {
-                return ResponseEntity.status(HttpStatus.CREATED).body(adsService.adAd(createAds, imageService.uploadImage(image), user));
-            } catch (IOException e) {
-                return ResponseEntity.badRequest().build();
-            }
-        } else {
-            return ResponseEntity.status(401).build();
-        }
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<AdsDTO> addAds(@RequestPart("image") MultipartFile image,
+                                         @RequestPart("properties") CreateAds properties, Authentication authentication) {
+        printLogInfo("/ads/", "post", "/ads/");
+        AdsDTO adsDTO = adsService.adAd(properties, image, authentication);
+        return ResponseEntity.ok(adsDTO);
     }
 
     // Получить информацию об объявлении
@@ -96,8 +95,9 @@ public class AdsController {
             }
     )
     @GetMapping("/{id}")
-    public ResponseEntity<FullAdsDTO> getAds(@PathVariable int id) {
-        return ResponseEntity.ok(adsService.getAdInfo(id));
+    public ResponseEntity<FullAdsDTO> getAds(@PathVariable("id") int id) {
+        FullAdsDTO fullAdsDTO = adsService.getAdInfo(id);
+        return ResponseEntity.ok(fullAdsDTO);
     }
 
     // Удалить объявление
@@ -110,9 +110,11 @@ public class AdsController {
             }
     )
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> removeAd(@PathVariable int id) {
-        adsService.deleteById(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> removeAd(@PathVariable int id, Authentication authentication) {
+        if (adsService.deleteById(id, authentication)) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     // Обновить информацию об объявлении
@@ -123,7 +125,7 @@ public class AdsController {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            schema = @Schema(implementation = CreateAdsDTO.class)
+                                            schema = @Schema(implementation = CreateAds.class)
                                     )
                             }
                     ),
@@ -132,8 +134,8 @@ public class AdsController {
             }
     )
     @PatchMapping("/{id}")
-    public ResponseEntity<AdsDTO> updateAds(@PathVariable int id, @RequestBody CreateAdsDTO createAds) {
-        return ResponseEntity.ok(adsService.update(id, createAds));
+    public ResponseEntity<AdsDTO> updateAds(@PathVariable int id, @RequestBody CreateAds createAds, Authentication authentication) {
+        return ResponseEntity.ok(adsService.update(id, createAds, authentication));
     }
 
     // Получить объявления авторизованного пользователя
@@ -153,8 +155,9 @@ public class AdsController {
             }
     )
     @GetMapping("/me")
-    public ResponseEntity<ResponseWrapperAds> getAdsMe(Authentication authentication) {
-        return ResponseEntity.ok(adsService.getAllUserAds(authentication.getName()));
+    public ResponseEntity<ResponseWrapperAds<AdsDTO>> getAdsMe(Authentication authentication) {
+        ResponseWrapperAds<AdsDTO> response = adsService.getAllUserAds(authentication.getName());
+        return ResponseEntity.ok(response);
     }
 
     // Обновить картинку объявления
@@ -173,12 +176,8 @@ public class AdsController {
             }
     )
     @PatchMapping("/{id}/image")
-    public ResponseEntity<AdsDTO> updateImage(@PathVariable int id, @RequestParam MultipartFile image) {
-        try {
-            return ResponseEntity.ok(adsService.updateImage(id, imageService.uploadImage(image)));
-        } catch (IOException e) {
-            return ResponseEntity.status(403).build();
-        }
+    public ResponseEntity<AdsDTO> updateImage(@PathVariable int id, @RequestParam MultipartFile image, Authentication authentication) {
+        return ResponseEntity.ok(adsService.updateImage(id, image, authentication));
     }
 
     // Получить комментарии объявления
@@ -194,14 +193,14 @@ public class AdsController {
                                     )
                             }
                     ),
-
                     @ApiResponse(
                             responseCode = "401", description = "Unauthorized")
             }
     )
     @GetMapping("{id}/comments")
-    public ResponseEntity<ResponseWrapperCommentDTO> getComments(@PathVariable int id) {
-        return ResponseEntity.ok(commentService.getComments(id));
+    public ResponseEntity<ResponseWrapperCommentDTO> getComments(@PathVariable("id") int id) {
+        ResponseWrapperCommentDTO responseWrapperCommentDTO = commentService.getComments(id);
+        return ResponseEntity.ok(responseWrapperCommentDTO);
     }
 
     // Добавить комментарий к объявлению
@@ -220,8 +219,8 @@ public class AdsController {
             }
     )
     @PostMapping("{id}/comments")
-    public ResponseEntity<CommentDTO> addComment(@PathVariable int id, @RequestBody CreateCommentDTO createCommentDTO, Authentication authentication) {
-        return ResponseEntity.ok(commentService.addComment(id, createCommentDTO));
+    public ResponseEntity<CommentDTO> addComment(@PathVariable("id") int id, @RequestBody CreateCommentDTO createComment, Authentication authentication) {
+        return ResponseEntity.ok(commentService.addComment(id, createComment, authentication));
     }
 
     // Удалить комментарий
@@ -234,9 +233,11 @@ public class AdsController {
             }
     )
     @DeleteMapping("{adId}/comments/{commentId}")
-    public ResponseEntity<CommentDTO> deleteComment(@PathVariable int adId, @PathVariable int commentId) {
-        commentService.deleteById(adId, commentId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<CommentDTO> deleteComment(@PathVariable int adId, @PathVariable int commentId, Authentication authentication) {
+        if (commentService.deleteComment(adId, commentId, authentication)) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     // Обновить комментарий
@@ -256,9 +257,9 @@ public class AdsController {
             }
     )
     @PatchMapping("{adId}/comments/{commentId}")
-    public ResponseEntity<CommentDTO> updateComment(@PathVariable int adId, @PathVariable int commentId,
-                                                    @RequestBody CommentDTO comment) {
-        return ResponseEntity.ok(commentService.updateComment(adId, commentId, comment));
+    public ResponseEntity<CommentDTO> updateComment(@PathVariable("adId") int adId, @PathVariable("commentId") int commentId,
+                                                    @RequestBody CommentDTO comment, Authentication authentication) {
+        return ResponseEntity.ok(commentService.updateComment(adId, commentId, comment, authentication));
     }
 
     @Operation(
@@ -280,4 +281,19 @@ public class AdsController {
         return ResponseEntity.ok(adsService.getAllByTitle(title));
     }
 
+    @Operation(summary = "Получить картинку объявления",
+            tags = "Объявления",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK"),
+                    @ApiResponse(responseCode = "404", description = "Not found", content = @Content())
+            })
+    @GetMapping(value = "/image/{id}", produces = {MediaType.IMAGE_PNG_VALUE})
+    public ResponseEntity<byte[]> getImage(@PathVariable("id") String id) {
+        return ResponseEntity.ok(imageService.loadImage(id));
+    }
+
+    private void printLogInfo(String name, String requestMethod, String path) {
+        logger.info("Вызван метод " + name + ", адрес "
+                + requestMethod.toUpperCase() + " запроса " + path);
+    }
 }

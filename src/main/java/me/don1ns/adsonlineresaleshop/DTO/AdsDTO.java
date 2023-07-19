@@ -1,5 +1,6 @@
 package me.don1ns.adsonlineresaleshop.DTO;
 import lombok.Data;
+
 /**
  * @author Артем Королёв
  **/
@@ -7,7 +8,7 @@ import lombok.Data;
 public class AdsDTO {
     private int authorId;
     private String image;
-    private int id;
+    private int pk;
     private int price;
     private String title;
     private String description;
@@ -28,12 +29,12 @@ public class AdsDTO {
         this.image = image;
     }
 
-    public int getId() {
-        return id;
+    public int getPk() {
+        return pk;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setPk(int pk) {
+        this.pk = pk;
     }
 
     public int getPrice() {

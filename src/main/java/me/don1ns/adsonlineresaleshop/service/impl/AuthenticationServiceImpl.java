@@ -1,7 +1,6 @@
 package me.don1ns.adsonlineresaleshop.service.impl;
 
-import jakarta.validation.ValidationException;
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import me.don1ns.adsonlineresaleshop.DTO.RegisterReqDTO;
 import me.don1ns.adsonlineresaleshop.entity.User;
 import me.don1ns.adsonlineresaleshop.mapper.UserMapper;
@@ -13,17 +12,26 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 
-@RequiredArgsConstructor
+@Slf4j
 @Service
+@Transactional
 public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final UserDetailsServiceImpl userDetailsServiceImpl;
     private final PasswordEncoder encoder;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+
+    public AuthenticationServiceImpl(UserDetailsServiceImpl userDetailsServiceImpl, PasswordEncoder encoder, UserRepository userRepository, UserMapper userMapper) {
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
+        this.encoder = encoder;
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
+    }
 
     @Override
     public boolean login(String userName, String password) {
@@ -45,10 +53,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public boolean register(RegisterReqDTO registerReqDTO) {
         User user = userMapper.toEntity(registerReqDTO);
         if (userRepository.existsByEmailIgnoreCase(user.getEmail())) {
-            throw new ValidationException(String.format("User \"%s\" is already registered!", user.getEmail()));
+            throw new RuntimeException("user already exist");
         }
         user.setPassword(encoder.encode(user.getPassword()));
-        user.setRegDate(Instant.now());
         userRepository.save(user);
         return true;
     }
