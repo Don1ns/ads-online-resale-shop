@@ -124,6 +124,15 @@ public class AdsServiceImpl implements AdsService {
         return adsMapper.toFullAdsDto(repository.findById(id).orElseThrow(AdNotFoundException::new));
     }
 
+    @Override
+    public ResponseWrapperAds<AdsDTO> getAllByTitle(String title) {
+        ResponseWrapperAds<AdsDTO> response = new ResponseWrapperAds<>();
+        List<AdsDTO> ads = repository.findAllByTitleContainingIgnoreCase(title).stream()
+                .map(adsMapper::toAdsDto)
+                .collect(Collectors.toList());
+        response.setCount(ads.size());
+        response.setResults(ads);
+        return response;
     private boolean adAccessCheck(int id, Authentication authentication) {
         User user = userService.getUser(authentication.getName());
         if (user.getAuthorities().contains(Role.ADMIN)) {

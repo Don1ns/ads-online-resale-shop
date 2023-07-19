@@ -15,6 +15,7 @@ public interface AdsService {
     AdsDTO adAd(CreateAds createAds, MultipartFile file, Authentication authentication);
     ResponseWrapperAds<AdsDTO> getAllAds();
     FullAdsDTO getAdInfo(int id);
+    ResponseWrapperAds<AdsDTO> getAllByTitle(String title);
     AdsDTO update(int id, CreateAds createAds, Authentication authentication);
     ResponseWrapperAds<AdsDTO> getAllUserAds(String userName);
     AdsDTO updateImage(int id, MultipartFile file, Authentication authentication);
